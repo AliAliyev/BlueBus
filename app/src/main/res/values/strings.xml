@@ -1,6 +1,16 @@
 <resources>
     <string name="app_name">Blue_Bus</string>
 
-    <string name="hello_world">Hello world!</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
     <string name="action_settings">Settings</string>
+
+    <string-array name="countries_list">
+        <item>USA</item>
+        <item>UK</item>
+        <item>Ukraine</item>
+
+    </string-array>
+
 </resources>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="media.apis.android.example.packagecom.blue_bus.MainActivity"
+    tools:showIn="@layout/app_bar_main">
+
+    <ImageButton
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:id="@+id/search"
+        android:background="@drawable/search"
+        android:layout_marginTop="58dp"
+        android:layout_alignRight="@+id/add"
+        android:layout_alignEnd="@+id/add" />
+
+    <ImageButton
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:id="@+id/add"
+        android:background="@drawable/addn"
+        android:layout_marginTop="73dp"
+        android:layout_below="@+id/textView"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Search ride"
+        android:id="@+id/textView"
+        android:layout_below="@+id/search"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Offer ride"
+        android:id="@+id/textView2"
+        android:layout_below="@+id/add"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>
