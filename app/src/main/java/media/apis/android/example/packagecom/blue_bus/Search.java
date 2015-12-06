@@ -87,11 +87,16 @@ public class Search extends ActionBarActivity {
 
         dateText.setText(sdf.format(myCalendar.getTime()));
 
-
     }
 
     private static final String[] COUNTRIES = new String[] {
-            "Belgium", "France", "Italy", "Germany", "Spain", "Fransua", "Fraaaa"
+            "Andover - Kingsgate House", "Birmingham - Business Park", "Bristol - Beta Building",
+            "Cambridge - Discovery House", "Crewe - Rail House", "Darlington - Equinox House",
+            "Dublin - Ireland","Dundee - Maryfield House", "Guildford - Deacon Field",
+            "Leeds - Wellington Place", "Linwood - St James Business Park", "Liverpool - Old Hall Street",
+            "Livingston - Appleton Parkway", "London, Triton Square", "Nottingham - Building 10.1",
+            "Runcorn - Daresbury Court", "Westbury - Heywood House", "Winnersh – 1020 Eskdale Road",
+            "Wolverhampton - Trinity Court"
     };
 
 
