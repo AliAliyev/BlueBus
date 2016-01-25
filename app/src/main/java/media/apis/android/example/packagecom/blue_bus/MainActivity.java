@@ -99,17 +99,20 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_camera) {
             // Handle the camera action
+        } //else if (id == R.id.nav_camera) {
+
+       // }
+        else if (id == R.id.nav_slideshow) {
+
         } else if (id == R.id.nav_gallery) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_register) {
+            startActivity(new Intent(getApplicationContext(), Register.class));
+        } else if (id == R.id.nav_login) {
+            startActivity(new Intent(getApplicationContext(), Login.class));
+        }// else if (id == R.id.nav_register) {
 
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
+       // }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

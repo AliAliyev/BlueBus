@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ImageView
@@ -8,13 +9,12 @@
         android:layout_height="120dp"
         android:id="@+id/imageView3"
         android:background="@drawable/omp"
-        android:layout_marginRight="23dp"
-        android:layout_marginEnd="23dp"
         android:layout_gravity="center_horizontal"
-        android:layout_alignParentTop="true"
+        android:layout_alignTop="@+id/from"
         android:layout_toLeftOf="@+id/from"
         android:layout_toStartOf="@+id/from"
-        android:layout_marginTop="87dp" />
+        android:layout_marginRight="23dp"
+        android:layout_marginEnd="23dp" />
 
     <AutoCompleteTextView
         android:layout_width="200dp"
@@ -22,9 +22,9 @@
         android:id="@+id/from"
         android:inputType="text"
         android:hint="from..."
-        android:layout_alignTop="@+id/imageView3"
-        android:layout_alignLeft="@+id/to"
-        android:layout_alignStart="@+id/to" />
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="66dp" />
 
     <AutoCompleteTextView
         android:layout_width="200dp"
@@ -33,7 +33,8 @@
         android:inputType="text"
         android:hint="to..."
         android:layout_alignBottom="@+id/imageView3"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignLeft="@+id/from"
+        android:layout_alignStart="@+id/from" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -62,11 +63,12 @@
         android:layout_height="wrap_content"
         android:text="Return trip"
         android:id="@+id/switch1"
-        android:layout_centerVertical="true"
+        android:layout_below="@+id/to"
         android:layout_alignRight="@+id/to"
         android:layout_alignEnd="@+id/to"
-        android:layout_toRightOf="@+id/imageButton3"
-        android:layout_toEndOf="@+id/imageButton3" />
+        android:layout_marginTop="22dp"
+        android:layout_alignLeft="@+id/to"
+        android:layout_alignStart="@+id/to" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -97,6 +99,6 @@
         android:layout_height="75dp"
         android:id="@+id/imageButton5"
         android:background="@drawable/go"
-        android:layout_below="@+id/imageButton4"
+        android:layout_below="@+id/editText5"
         android:layout_centerHorizontal="true" />
 </RelativeLayout>

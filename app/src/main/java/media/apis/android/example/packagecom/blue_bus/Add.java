@@ -24,6 +24,7 @@ public class Add extends ActionBarActivity {
     private Calendar myCalendar1;
     private Calendar myCalendar2;
     private EditText returnT, depart;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add);
