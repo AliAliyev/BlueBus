@@ -70,5 +70,23 @@
             android:layout_marginBottom="48dp"
             android:background="@drawable/go" />
 
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageButton6"
+            android:src="@drawable/plus"
+            android:layout_alignBottom="@+id/editText"
+            android:layout_toRightOf="@+id/editText"
+            android:layout_toEndOf="@+id/editText" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageButton7"
+            android:src="@drawable/plus"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/editText2"
+            android:layout_toEndOf="@+id/editText2" />
+
     </RelativeLayout>
 </LinearLayout>
