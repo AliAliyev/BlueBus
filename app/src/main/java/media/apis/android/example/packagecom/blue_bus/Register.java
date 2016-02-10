@@ -59,7 +59,7 @@ public class Register extends AppCompatActivity implements LoaderCallbacks<Curso
 
     // UI references.
     private AutoCompleteTextView mEmailView;
-    private EditText mPasswordView;
+    private EditText mPasswordView,mFirstNameView, mFamilyNameView, mAgeView;
     private View mProgressView;
     private View mLoginFormView;
     private Spinner spinner;
@@ -83,12 +83,16 @@ public class Register extends AppCompatActivity implements LoaderCallbacks<Curso
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
+        mFirstNameView = (EditText) findViewById(R.id.FirstName);
+        mFamilyNameView = (EditText) findViewById(R.id.FamilyName);
+        mAgeView = (EditText) findViewById(R.id.age);
+
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
+                    attemptRegister();
                     return true;
                 }
                 return false;
@@ -99,7 +103,7 @@ public class Register extends AppCompatActivity implements LoaderCallbacks<Curso
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptLogin();
+                attemptRegister();
             }
         });
 
@@ -162,7 +166,7 @@ public class Register extends AppCompatActivity implements LoaderCallbacks<Curso
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    private void attemptLogin() {
+    private void attemptRegister() {
         if (mAuthTask != null) {
             return;
         }
@@ -174,6 +178,9 @@ public class Register extends AppCompatActivity implements LoaderCallbacks<Curso
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
+        String firstName = mFirstNameView.getText().toString();
+        String familyName = mFamilyNameView.getText().toString();
+        String age = mAgeView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -193,6 +200,24 @@ public class Register extends AppCompatActivity implements LoaderCallbacks<Curso
         } else if (!isEmailValid(email)) {
             mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
+            cancel = true;
+        }
+
+        if (TextUtils.isEmpty(firstName)) {
+            mFirstNameView.setError(getString(R.string.error_field_required));
+            focusView = mFirstNameView;
+            cancel = true;
+        }
+
+        if (TextUtils.isEmpty(familyName)) {
+            mFamilyNameView.setError(getString(R.string.error_field_required));
+            focusView = mFamilyNameView;
+            cancel = true;
+        }
+
+        if (TextUtils.isEmpty(age)) {
+            mAgeView.setError(getString(R.string.error_field_required));
+            focusView = mAgeView;
             cancel = true;
         }
 
