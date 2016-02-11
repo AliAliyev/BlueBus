@@ -1,7 +1,6 @@
 package media.apis.android.example.packagecom.blue_bus;
 
 import android.app.DatePickerDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
@@ -75,22 +74,6 @@ public class Search extends ActionBarActivity {
                 new DatePickerDialog(Search.this, date, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-            }
-        });
-
-        ImageButton addMapFrom = (ImageButton) findViewById(R.id.imageButton6);
-        addMapFrom.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), Map.class));
-            }
-        });
-
-        ImageButton addMapTo = (ImageButton) findViewById(R.id.imageButton7);
-        addMapTo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), Map.class));
             }
         });
 
