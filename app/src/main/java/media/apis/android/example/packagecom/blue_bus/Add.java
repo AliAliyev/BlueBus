@@ -1,6 +1,7 @@
 package media.apis.android.example.packagecom.blue_bus;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
@@ -134,6 +135,33 @@ public class Add extends ActionBarActivity {
                         .get(Calendar.YEAR), myCalendar2.get(Calendar.MONTH),
                         myCalendar2.get(Calendar.DAY_OF_MONTH)).show();
 
+            }
+        });
+
+        ImageButton addMapFrom = (ImageButton) findViewById(R.id.imageButton10);
+        addMapFrom.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Boolean start = true;
+                Boolean searchPage = false;
+                //sending two pieces of message
+                Intent intent = new Intent(Add.this, Map.class);
+                intent.putExtra("startPoint or terminal", start);
+                intent.putExtra("searchPage or addPage", searchPage);
+                startActivity(intent);
+            }
+        });
+
+        ImageButton addMapTo = (ImageButton) findViewById(R.id.imageButton11);
+        addMapTo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Boolean start = false;
+                Boolean searchPage = false;
+                //sending two pieces of message
+                Intent intent = new Intent(Add.this, Map.class);
+                intent.putExtra("startPoint or terminal", start);
+                intent.putExtra("searchPage or addPage", searchPage);
+                startActivity(intent);
             }
         });
 

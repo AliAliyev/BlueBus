@@ -10,7 +10,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
-
+import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -18,14 +18,35 @@ import java.util.Locale;
 /**
  * Created by Ali on 03/12/2015.
  */
+
+
 public class Search extends ActionBarActivity {
 
     private EditText dateText;
     private Calendar myCalendar;
 
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search);
+
+        //receive data from Map page
+        System.out.println("start transferring");
+        Bundle extras = getIntent().getExtras();
+        if (extras!=null&&getIntent()!=null){
+            String address =(String)extras.get("selectedAddress");
+            Boolean type = (Boolean)extras.get("t");
+            System.out.println("receiving ArrayList, "+type);
+            if (type=true) {
+                //save the option as start point
+                EditText editText = (EditText) findViewById(R.id.editText);
+                editText.setText(address, TextView.BufferType.EDITABLE);
+            } else {
+                //save the option as terminal
+                EditText editText = (EditText) findViewById(R.id.editText2);
+                editText.setText(address, TextView.BufferType.EDITABLE);
+            }
+        }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_dropdown_item_1line, COUNTRIES);
@@ -80,9 +101,15 @@ public class Search extends ActionBarActivity {
 
         ImageButton addMapFrom = (ImageButton) findViewById(R.id.imageButton6);
         addMapFrom.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), Map.class));
+                Boolean start = true;
+                Boolean searchPage = true;
+
+                //sending two pieces of message
+                Intent intent = new Intent(Search.this, Map.class);
+                intent.putExtra("startPoint or terminal", start);
+                intent.putExtra("searchPage or addPage", searchPage);
+                startActivity(intent);
             }
         });
 
@@ -90,7 +117,14 @@ public class Search extends ActionBarActivity {
         addMapTo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), Map.class));
+                Boolean start = false;
+                Boolean searchPage = true;
+
+                //sending two pieces of message
+                Intent intent = new Intent(Search.this, Map.class);
+                intent.putExtra("startPoint or terminal", start);
+                intent.putExtra("searchPage or addPage", searchPage);
+                startActivity(intent);
             }
         });
 

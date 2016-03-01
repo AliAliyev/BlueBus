@@ -65,4 +65,22 @@
         android:layout_centerVertical="true"
         android:layout_alignRight="@+id/to"
         android:layout_alignEnd="@+id/to" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageButton10"
+        android:layout_alignTop="@+id/from"
+        android:layout_toRightOf="@+id/from"
+        android:layout_toEndOf="@+id/from"
+        android:src="@drawable/plus" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageButton11"
+        android:layout_alignTop="@+id/to"
+        android:layout_toRightOf="@+id/to"
+        android:layout_toEndOf="@+id/to"
+        android:src="@drawable/plus" />
 </RelativeLayout>
