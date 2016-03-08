@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.CursorLoader;
 import android.content.Loader;
@@ -12,10 +13,10 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
+import android.os.Build.VERSION;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -29,7 +30,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +49,7 @@ public class Register extends AppCompatActivity implements LoaderCallbacks<Curso
     /**
      * Id to identity READ_CONTACTS permission request.
      */
+
     private static final int REQUEST_READ_CONTACTS = 0;
 
     /**
@@ -55,6 +62,7 @@ public class Register extends AppCompatActivity implements LoaderCallbacks<Curso
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
+
     private UserLoginTask mAuthTask = null;
 
     // UI references.
@@ -63,6 +71,8 @@ public class Register extends AppCompatActivity implements LoaderCallbacks<Curso
     private View mProgressView;
     private View mLoginFormView;
     private Spinner spinner;
+
+    private static final String REGISTER_URL = "http://halfbloodprince.16mb.com/register1.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +91,7 @@ public class Register extends AppCompatActivity implements LoaderCallbacks<Curso
         spinner.setAdapter(adapter);
 
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        populateAutoComplete();
+       // populateAutoComplete();
 
         mFirstNameView = (EditText) findViewById(R.id.FirstName);
         mFamilyNameView = (EditText) findViewById(R.id.FamilyName);
@@ -99,8 +109,8 @@ public class Register extends AppCompatActivity implements LoaderCallbacks<Curso
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        Button mRegister = (Button) findViewById(R.id.register);
+        mRegister.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptRegister();
@@ -111,12 +121,14 @@ public class Register extends AppCompatActivity implements LoaderCallbacks<Curso
         mProgressView = findViewById(R.id.login_progress);
     }
 
+
+
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {
             return;
         }
 
-        if (VERSION.SDK_INT >= 14) {
+        if (Build.VERSION.SDK_INT >= 14) {
             // Use ContactsContract.Profile (API 14+)
             getLoaderManager().initLoader(0, null, this);
         } else if (VERSION.SDK_INT >= 8) {
@@ -124,6 +136,8 @@ public class Register extends AppCompatActivity implements LoaderCallbacks<Curso
             new SetupEmailAutoCompleteTask().execute(null, null);
         }
     }
+
+
 
     private boolean mayRequestContacts() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
@@ -147,9 +161,12 @@ public class Register extends AppCompatActivity implements LoaderCallbacks<Curso
         return false;
     }
 
+
     /**
      * Callback received when a permissions request has been completed.
      */
+
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
@@ -167,6 +184,7 @@ public class Register extends AppCompatActivity implements LoaderCallbacks<Curso
      * errors are presented and no actual login attempt is made.
      */
     private void attemptRegister() {
+
         if (mAuthTask != null) {
             return;
         }
@@ -176,11 +194,11 @@ public class Register extends AppCompatActivity implements LoaderCallbacks<Curso
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
         String firstName = mFirstNameView.getText().toString();
         String familyName = mFamilyNameView.getText().toString();
         String age = mAgeView.getText().toString();
+        String email = mEmailView.getText().toString();
+        String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -235,6 +253,8 @@ public class Register extends AppCompatActivity implements LoaderCallbacks<Curso
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
+            register(firstName, familyName, age, email, password);
+
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
         }
@@ -248,6 +268,50 @@ public class Register extends AppCompatActivity implements LoaderCallbacks<Curso
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
         return password.length() > 4;
+    }
+
+    private void register(String firstName, String familyName, String age, String email, String password) {
+        String urlSuffix = "?firstName="+firstName+"&familyName="+familyName+"&age="+age+"&email="+email+"&password="+password;
+        class RegisterUser extends AsyncTask<String, Void, String>{
+
+            ProgressDialog loading;
+
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                loading = ProgressDialog.show(Register.this, "Please Wait",null, true, true);
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                loading.dismiss();
+                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                String s = params[0];
+                BufferedReader bufferedReader = null;
+                try {
+                    URL url = new URL(REGISTER_URL+s);
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+
+                    String result;
+
+                    result = bufferedReader.readLine();
+
+                    return result;
+                }catch(Exception e){
+                    return null;
+                }
+            }
+        }
+
+        RegisterUser ru = new RegisterUser();
+        ru.execute(urlSuffix);
     }
 
     /**
@@ -285,6 +349,7 @@ public class Register extends AppCompatActivity implements LoaderCallbacks<Curso
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
+
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
