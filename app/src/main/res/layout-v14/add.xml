@@ -101,4 +101,22 @@
         android:background="@drawable/go"
         android:layout_below="@+id/editText5"
         android:layout_centerHorizontal="true" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageButton10"
+        android:layout_alignTop="@+id/from"
+        android:layout_toRightOf="@+id/from"
+        android:layout_toEndOf="@+id/from"
+        android:src="@drawable/plus" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageButton11"
+        android:src="@drawable/plus"
+        android:layout_above="@+id/editText4"
+        android:layout_alignLeft="@+id/imageButton10"
+        android:layout_alignStart="@+id/imageButton10" />
 </RelativeLayout>
