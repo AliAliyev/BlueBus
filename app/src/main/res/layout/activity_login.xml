@@ -74,6 +74,20 @@
                 android:text="Log in"
                 android:textStyle="bold" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New member?"
+                android:id="@+id/textView3"
+                android:layout_gravity="center_horizontal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Register"
+                android:id="@+id/register"
+                android:layout_gravity="center_horizontal" />
+
         </LinearLayout>
     </ScrollView>
 

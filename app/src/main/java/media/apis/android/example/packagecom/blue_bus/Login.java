@@ -89,6 +89,15 @@ public class Login extends AppCompatActivity {
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
+        TextView register = (TextView) findViewById(R.id.register);
+        register.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), Register.class));
+            }
+        });
+
+
     }
 
 
@@ -105,13 +114,15 @@ public class Login extends AppCompatActivity {
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
                 loading.dismiss();
-                if(s.equalsIgnoreCase("success")){
-                    Intent intent = new Intent(Login.this,UserProile.class);
+                s = s.trim();
+                if (s.equalsIgnoreCase("success")){
+                    Toast.makeText(getApplicationContext(), "logged in", Toast.LENGTH_LONG);
+                    Intent intent = new Intent(getApplicationContext(),UserProile.class);
                     intent.putExtra(USER_NAME,username);
                     startActivity(intent);
                   //  startActivity(new Intent(getApplicationContext(), UserProile.class));
                 }else{
-                    Toast.makeText(Login.this,s, Toast.LENGTH_LONG).show();
+                    Toast.makeText(Login.this, "not logged in", Toast.LENGTH_LONG).show();
                 }
             }
 
