@@ -4,9 +4,11 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -24,6 +26,9 @@ public class Search extends ActionBarActivity {
 
     private EditText dateText;
     private Calendar myCalendar;
+    private EditText startPoint;
+    private EditText terminalPoint;
+
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +36,6 @@ public class Search extends ActionBarActivity {
         setContentView(R.layout.search);
 
         //receive data from Map page
-        System.out.println("start transferring");
         Bundle extras = getIntent().getExtras();
         if (extras!=null&&getIntent()!=null){
             String address =(String)extras.get("selectedAddress");
@@ -42,7 +46,7 @@ public class Search extends ActionBarActivity {
                 EditText editText = (EditText) findViewById(R.id.editText);
                 editText.setText(address, TextView.BufferType.EDITABLE);
             } else {
-                //save the option as terminal
+                //save the option as terminal point
                 EditText editText = (EditText) findViewById(R.id.editText2);
                 editText.setText(address, TextView.BufferType.EDITABLE);
             }
@@ -99,6 +103,7 @@ public class Search extends ActionBarActivity {
             }
         });
 
+
         ImageButton addMapFrom = (ImageButton) findViewById(R.id.imageButton6);
         addMapFrom.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -127,6 +132,47 @@ public class Search extends ActionBarActivity {
                 startActivity(intent);
             }
         });
+
+        startPoint = (EditText) findViewById(R.id.editText);
+        terminalPoint = (EditText) findViewById(R.id.editText2);
+        final String SP = startPoint.getText().toString();
+        final String TP = terminalPoint.getText().toString();
+
+        ImageButton search = (ImageButton) findViewById(R.id.imageButton2);
+        search.setOnClickListener(new View.OnClickListener(){
+            @Override
+
+            public void onClick(View v) {
+                boolean cancel = false;
+                View focusView = null;
+                if (!TextUtils.isEmpty(SP)&&!TextUtils.isEmpty(TP)){
+                    //Intent intent = new Intent(Search.this, SearchResult.class);
+                    //intent.putExtra("startPoint or terminal", start);
+                    //intent.putExtra("searchPage or addPage", searchPage);
+                    //startActivity(intent);
+                } else if (TextUtils.isEmpty(SP)){
+                    startPoint.setError("Start point needs to be set");
+                    focusView = startPoint;
+                    cancel = true;
+                } else {
+                    terminalPoint.setError("Terminal point needs to be set");
+                    focusView = terminalPoint;
+                    cancel = true;}
+
+                if (cancel) {
+                    // There was an error; don't attempt login and focus the first
+                    // form field with an error.
+                    focusView.requestFocus();
+                } else {
+                    // Show a progress spinner, and kick off a background task to
+                    // perform the user login attempt.
+                    //showProgress(true);
+                    //mAuthTask = new UserLoginTask(email, password);
+                    //mAuthTask.execute((Void) null);
+                }
+            }
+        });
+
 
 
     }
