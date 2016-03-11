@@ -3,46 +3,35 @@ package media.apis.android.example.packagecom.blue_bus;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.LoaderManager.LoaderCallbacks;
-import android.content.ContentResolver;
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.net.Uri;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Build.VERSION;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static android.Manifest.permission.READ_CONTACTS;
+import java.util.HashMap;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor>{
+public class Login extends AppCompatActivity {
+        //implements LoaderCallbacks<Cursor>{
 
     /**
      * Id to identity READ_CONTACTS permission request.
      */
-    private static final int REQUEST_READ_CONTACTS = 0;
+   ////// private static final int REQUEST_READ_CONTACTS = 0;
 
     /**
      * A dummy authentication store containing known user names and passwords.
@@ -62,6 +51,10 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor>{
     private View mProgressView;
     private View mLoginFormView;
 
+    public static final String USER_NAME = "USER_NAME";
+    public static final String PASSWORD = "PASSWORD";
+    private static final String LOGIN_URL = "http://halfbloodprince.16mb.com/login.php";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +63,8 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor>{
 
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        populateAutoComplete();
+
+     //////   populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -94,9 +88,52 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor>{
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
     }
 
 
+    private void userLogin(final String username, final String password){
+        class UserLoginClass extends AsyncTask<String,Void,String>{
+            ProgressDialog loading;
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                loading = ProgressDialog.show(Login.this,"Please Wait",null,true,true);
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                loading.dismiss();
+                if(s.equalsIgnoreCase("success")){
+                    Intent intent = new Intent(Login.this,UserProile.class);
+                    intent.putExtra(USER_NAME,username);
+                    startActivity(intent);
+                  //  startActivity(new Intent(getApplicationContext(), UserProile.class));
+                }else{
+                    Toast.makeText(Login.this,s, Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String,String> data = new HashMap<>();
+                data.put("email",params[0]);
+                data.put("password",params[1]);
+
+                RegisterUserClass ruc = new RegisterUserClass();
+
+                String result = ruc.sendPostRequest(LOGIN_URL,data);
+
+                return result;
+            }
+        }
+        UserLoginClass ulc = new UserLoginClass();
+        ulc.execute(username,password);
+    }
+
+
+/*
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {
             return;
@@ -133,9 +170,9 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor>{
         return false;
     }
 
-    /**
-     * Callback received when a permissions request has been completed.
-     */
+
+    /// * Callback received when a permissions request has been completed.
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
@@ -145,7 +182,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor>{
             }
         }
     }
-
+*/
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -180,11 +217,11 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor>{
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
             cancel = true;
-        } /*else if (!isEmailValid(email)) {
+        } else if (!isEmailValid(email)) {
             mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
             cancel = true;
-        }*/
+        }
 
         if (cancel) {
             // There was an error; don't attempt login and focus the first
@@ -194,6 +231,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor>{
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
+            userLogin(email, password);
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
         }
@@ -245,6 +283,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor>{
         }
     }
 
+    /*
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         return new CursorLoader(this,
@@ -298,10 +337,14 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor>{
         int IS_PRIMARY = 1;
     }
 
+    */
+
     /**
      * Use an AsyncTask to fetch the user's email addresses on a background thread, and update
      * the email text field with results on the main UI thread.
      */
+
+    /*
     class SetupEmailAutoCompleteTask extends AsyncTask<Void, Void, List<String>> {
 
         @Override
@@ -327,6 +370,8 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor>{
             addEmailsToAutoComplete(emailAddressCollection);
         }
     }
+
+*/
 
     /**
      * Represents an asynchronous login/registration task used to authenticate

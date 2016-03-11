@@ -110,6 +110,22 @@
                 android:text="Register"
                 android:textStyle="bold" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Already registered?"
+                android:id="@+id/al_reg"
+                android:layout_gravity="center_horizontal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Login"
+                android:id="@+id/login"
+                android:layout_gravity="center_horizontal"
+                android:clickable="true"
+                android:contextClickable="true" />
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

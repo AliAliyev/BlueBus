@@ -3,21 +3,11 @@ package media.apis.android.example.packagecom.blue_bus;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.LoaderManager.LoaderCallbacks;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.net.Uri;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.support.annotation.NonNull;
-import android.os.Build.VERSION;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -36,15 +26,11 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
-import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class Register extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class Register extends AppCompatActivity  {
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -109,6 +95,13 @@ public class Register extends AppCompatActivity implements LoaderCallbacks<Curso
             }
         });
 
+        TextView login = (TextView) findViewById(R.id.login);
+        login.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), Login.class));
+            }
+        });
         Button mRegister = (Button) findViewById(R.id.register);
         mRegister.setOnClickListener(new OnClickListener() {
             @Override
@@ -122,7 +115,7 @@ public class Register extends AppCompatActivity implements LoaderCallbacks<Curso
     }
 
 
-
+/*
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {
             return;
@@ -136,7 +129,6 @@ public class Register extends AppCompatActivity implements LoaderCallbacks<Curso
             new SetupEmailAutoCompleteTask().execute(null, null);
         }
     }
-
 
 
     private boolean mayRequestContacts() {
@@ -162,9 +154,9 @@ public class Register extends AppCompatActivity implements LoaderCallbacks<Curso
     }
 
 
-    /**
-     * Callback received when a permissions request has been completed.
-     */
+
+    // * Callback received when a permissions request has been completed.
+
 
 
     @Override
@@ -176,7 +168,7 @@ public class Register extends AppCompatActivity implements LoaderCallbacks<Curso
             }
         }
     }
-
+*/
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -350,7 +342,7 @@ public class Register extends AppCompatActivity implements LoaderCallbacks<Curso
         }
     }
 
-
+/*
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         return new CursorLoader(this,
@@ -404,10 +396,10 @@ public class Register extends AppCompatActivity implements LoaderCallbacks<Curso
         int IS_PRIMARY = 1;
     }
 
-    /**
+
      * Use an AsyncTask to fetch the user's email addresses on a background thread, and update
      * the email text field with results on the main UI thread.
-     */
+
     class SetupEmailAutoCompleteTask extends AsyncTask<Void, Void, List<String>> {
 
         @Override
@@ -433,6 +425,8 @@ public class Register extends AppCompatActivity implements LoaderCallbacks<Curso
             addEmailsToAutoComplete(emailAddressCollection);
         }
     }
+
+    */
 
     /**
      * Represents an asynchronous login/registration task used to authenticate

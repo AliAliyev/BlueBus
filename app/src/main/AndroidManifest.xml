@@ -47,6 +47,11 @@
             android:label="@string/title_activity_register"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".UserProile"
+            android:label="hew zad"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".Map"
