@@ -1,6 +1,7 @@
 package media.apis.android.example.packagecom.blue_bus;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -13,6 +14,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.content.SharedPreferences;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -29,27 +31,58 @@ public class Search extends ActionBarActivity {
     private EditText startPoint;
     private EditText terminalPoint;
 
+    Context context = this;
+    private SharedPreferences sharedPref;
+    private SharedPreferences.Editor editor;
+    private SharedPreferences sharedPref2;
+    private SharedPreferences.Editor editor2;
+
+
 
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search);
+        sharedPref = context.getSharedPreferences("address", MODE_WORLD_READABLE);
 
         //receive data from Map page
         Bundle extras = getIntent().getExtras();
         if (extras!=null&&getIntent()!=null){
             String address =(String)extras.get("selectedAddress");
             Boolean type = (Boolean)extras.get("t");
-            System.out.println("receiving ArrayList, "+type);
-            if (type=true) {
+
+            if (type==true) {
                 //save the option as start point
                 EditText editText = (EditText) findViewById(R.id.editText);
+                EditText editText2 = (EditText) findViewById(R.id.editText2);
                 editText.setText(address, TextView.BufferType.EDITABLE);
+                editor = sharedPref.edit();
+                editor.putString("SP", address);
+                editor.commit();
+
+                //if terminal point is previously set
+                if (sharedPref.contains("TP")){
+                    String TP = sharedPref.getString("TP",null);
+                    editText2.setText(TP, TextView.BufferType.EDITABLE);
+                    System.out.println("TP is " + TP);
+                }
             } else {
                 //save the option as terminal point
-                EditText editText = (EditText) findViewById(R.id.editText2);
-                editText.setText(address, TextView.BufferType.EDITABLE);
+                EditText editText = (EditText) findViewById(R.id.editText);
+                EditText editText2 = (EditText) findViewById(R.id.editText2);
+                editText2.setText(address, TextView.BufferType.EDITABLE);
+                editor = sharedPref.edit();
+                editor.putString("TP", address);
+                editor.commit();
+
+                //if start point is previously set
+                if (sharedPref.contains("SP")){
+                    String SP = sharedPref.getString("SP",null);
+                    editText.setText(SP, TextView.BufferType.EDITABLE);
+                    System.out.println("SP is "+SP);}
             }
+        } else {
+            sharedPref.edit().clear().commit();
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
@@ -104,6 +137,7 @@ public class Search extends ActionBarActivity {
         });
 
 
+
         ImageButton addMapFrom = (ImageButton) findViewById(R.id.imageButton6);
         addMapFrom.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -146,10 +180,19 @@ public class Search extends ActionBarActivity {
                 boolean cancel = false;
                 View focusView = null;
                 if (!TextUtils.isEmpty(SP)&&!TextUtils.isEmpty(TP)){
-                    //Intent intent = new Intent(Search.this, SearchResult.class);
-                    //intent.putExtra("startPoint or terminal", start);
-                    //intent.putExtra("searchPage or addPage", searchPage);
-                    //startActivity(intent);
+                    System.out.println("both not empty");
+                    if (!SP.equals(TP)){
+                        System.out.println("not equal");
+                        Intent intent = new Intent(Search.this, SearchResult.class);
+                        System.out.println("SearchResult page is going to be launched");
+                        //intent.putExtra("startPoint or terminal", start);
+                        //intent.putExtra("searchPage or addPage", searchPage);
+                        startActivity(intent);
+                    } else {
+                        terminalPoint.setError("Start point and terminal point are the same place");
+                        focusView = terminalPoint;
+                        cancel = true;
+                    }
                 } else if (TextUtils.isEmpty(SP)){
                     startPoint.setError("Start point needs to be set");
                     focusView = startPoint;
@@ -163,12 +206,6 @@ public class Search extends ActionBarActivity {
                     // There was an error; don't attempt login and focus the first
                     // form field with an error.
                     focusView.requestFocus();
-                } else {
-                    // Show a progress spinner, and kick off a background task to
-                    // perform the user login attempt.
-                    //showProgress(true);
-                    //mAuthTask = new UserLoginTask(email, password);
-                    //mAuthTask.execute((Void) null);
                 }
             }
         });
@@ -176,6 +213,8 @@ public class Search extends ActionBarActivity {
 
 
     }
+
+
 
     private void updateLabel() {
 
