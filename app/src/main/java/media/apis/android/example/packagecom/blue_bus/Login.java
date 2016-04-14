@@ -19,7 +19,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.HashMap;
 
 /**
@@ -37,13 +36,11 @@ public class Login extends AppCompatActivity {
      * A dummy authentication store containing known user names and passwords.
      * TODO: remove after connecting to a real authentication system.
      */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
+  //  private static final String[] DUMMY_CREDENTIALS = new String[]{"foo@example.com:hello", "bar@example.com:world"};
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserLoginTask mAuthTask = null;
+    //private UserLoginTask mAuthTask = null;
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -52,19 +49,24 @@ public class Login extends AppCompatActivity {
     private View mLoginFormView;
 
     public static final String USER_NAME = "USER_NAME";
-    public static final String PASSWORD = "PASSWORD";
+   // public static final String PASSWORD = "PASSWORD";
     private static final String LOGIN_URL = "http://halfbloodprince.16mb.com/login.php";
+
+    // User Session Manager Class
+    UserSessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        // User Session Manager
+        session = new UserSessionManager(getApplicationContext());
 
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
 
-     //////   populateAutoComplete();
+        //   populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -96,12 +98,18 @@ public class Login extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), Register.class));
             }
         });
-
-
     }
 
+    @Override
+    public void onBackPressed() {
+        if (!session.isUserLoggedIn()) {
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        } else {
+            super.onBackPressed();
+        }
+    }
 
-    private void userLogin(final String username, final String password){
+    public void userLogin(final String username, final String password){
         class UserLoginClass extends AsyncTask<String,Void,String>{
             ProgressDialog loading;
             @Override
@@ -116,13 +124,25 @@ public class Login extends AppCompatActivity {
                 loading.dismiss();
                 s = s.trim();
                 if (s.equalsIgnoreCase("success")){
+                    showProgress(true);
+                    // Creating user login session
+                    // Statically storing name="Android Example"
+                    // and email="androidexample84@gmail.com"
+                    session.createUserLoginSession("User",
+                            username);
+
                     Toast.makeText(getApplicationContext(), "logged in", Toast.LENGTH_LONG);
-                    Intent intent = new Intent(getApplicationContext(),UserProile.class);
-                    intent.putExtra(USER_NAME,username);
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                   // intent.putExtra(USER_NAME,username);
+
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                    // Add new Flag to start new Activity
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
-                  //  startActivity(new Intent(getApplicationContext(), UserProile.class));
+                    finish();
                 }else{
-                    Toast.makeText(Login.this, "not logged in", Toast.LENGTH_LONG).show();
+                    Toast.makeText(Login.this, "email or password is wrong", Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -133,7 +153,6 @@ public class Login extends AppCompatActivity {
                 data.put("password",params[1]);
 
                 RegisterUserClass ruc = new RegisterUserClass();
-
                 String result = ruc.sendPostRequest(LOGIN_URL,data);
 
                 return result;
@@ -142,7 +161,6 @@ public class Login extends AppCompatActivity {
         UserLoginClass ulc = new UserLoginClass();
         ulc.execute(username,password);
     }
-
 
 /*
     private void populateAutoComplete() {
@@ -181,7 +199,6 @@ public class Login extends AppCompatActivity {
         return false;
     }
 
-
     /// * Callback received when a permissions request has been completed.
 
     @Override
@@ -194,16 +211,13 @@ public class Login extends AppCompatActivity {
         }
     }
 */
-
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
+        //  if (mAuthTask != null) return;
 
         // Reset errors.
         mEmailView.setError(null);
@@ -217,7 +231,7 @@ public class Login extends AppCompatActivity {
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+        if (TextUtils.isEmpty(password) || !isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
@@ -241,10 +255,9 @@ public class Login extends AppCompatActivity {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            showProgress(true);
             userLogin(email, password);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            //  mAuthTask = new UserLoginTask(email, password);
+            //  mAuthTask.execute((Void) null);
         }
     }
 
@@ -388,7 +401,7 @@ public class Login extends AppCompatActivity {
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+   /* public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mEmail;
         private final String mPassword;
@@ -423,7 +436,7 @@ public class Login extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
+         //   mAuthTask = null;
             showProgress(false);
 
             if (success) {
@@ -436,9 +449,9 @@ public class Login extends AppCompatActivity {
 
         @Override
         protected void onCancelled() {
-            mAuthTask = null;
+        //    mAuthTask = null;
             showProgress(false);
         }
-    }
+    } */
 }
 

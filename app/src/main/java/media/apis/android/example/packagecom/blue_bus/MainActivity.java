@@ -3,9 +3,8 @@ package media.apis.android.example.packagecom.blue_bus;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -13,15 +12,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    UserSessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        session = new UserSessionManager(getApplicationContext());
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -43,6 +48,22 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        View header = navigationView.getHeaderView(0);
+        TextView text = (TextView) header.findViewById(R.id.user);
+
+        if(session.isUserLoggedIn())
+        text.setText(session.getUserDetails().get(UserSessionManager.KEY_EMAIL));
+
+        if(session.isUserLoggedIn())
+        {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.activity_main_drawer);
+        } else
+        {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.activity_log_drawer);
+        }
+
         ImageButton search = (ImageButton) findViewById(R.id.search);
         search.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,6 +78,27 @@ public class MainActivity extends AppCompatActivity
                 startActivity(new Intent(getApplicationContext(), Add.class));
             }
         });
+
+       // if(session.checkLogin())
+         //   finish();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //In onresume fetching value from sharedpreference
+     //   SharedPreferences sharedPreferences = getSharedPreferences(Config.SHARED_PREF_NAME,Context.MODE_PRIVATE);
+        session = new UserSessionManager(getApplicationContext());
+
+        //Fetching the boolean value form sharedpreferences
+       // loggedIn = sharedPreferences.getBoolean(Config.LOGGEDIN_SHARED_PREF, false);
+
+        //If we will get true
+     //   if(session.isUserLoggedIn()){
+            //We will start the Profile Activity
+         //   Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+       //     startActivity(intent);
+        //}
     }
 
     @Override
@@ -98,10 +140,8 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_home) {
-            // Handle the camera action
-        } //else if (id == R.id.nav_camera) {
+        } //else if (id == R.id.nav_camera) { }
 
-       // }
         else if (id == R.id.nav_inbox) {
 
         } else if (id == R.id.nav_rides) {
@@ -110,9 +150,9 @@ public class MainActivity extends AppCompatActivity
             startActivity(new Intent(getApplicationContext(), Register.class));
         } else if (id == R.id.nav_login) {
             startActivity(new Intent(getApplicationContext(), Login.class));
-        }// else if (id == R.id.nav_register) {
-
-       // }
+        } else if (id == R.id.nav_send) {
+            session.logoutUser();
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

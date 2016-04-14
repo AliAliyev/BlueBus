@@ -47,14 +47,15 @@
         android:ems="10"
         android:id="@+id/editText4"
         android:hint="depart date..."
-        android:layout_below="@+id/to"
-        android:layout_toRightOf="@+id/imageView3"
-        android:layout_toEndOf="@+id/imageView3"
-        android:layout_marginTop="80dp" />
+        android:layout_marginTop="32dp"
+        android:layout_below="@+id/switch1"
+        android:layout_toRightOf="@+id/imageButton3"
+        android:layout_alignRight="@+id/editText5"
+        android:layout_alignEnd="@+id/editText5" />
 
     <ImageButton
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:id="@+id/imageButton3"
         android:background="@drawable/calendar"
         android:contentDescription=""
@@ -81,15 +82,16 @@
         android:ems="10"
         android:id="@+id/editText5"
         android:hint="return date..."
-        android:layout_marginTop="29dp"
+        android:layout_marginTop="30dp"
+        android:visibility="visible"
         android:layout_below="@+id/editText4"
-        android:layout_alignLeft="@+id/switch1"
-        android:layout_alignStart="@+id/switch1"
-        android:visibility="visible" />
+        android:layout_toRightOf="@+id/imageButton4"
+        android:layout_alignRight="@+id/imageButton5"
+        android:layout_alignEnd="@+id/imageButton5" />
 
     <ImageButton
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:id="@+id/imageButton4"
         android:background="@drawable/calendar"
         android:contentDescription=""
@@ -121,8 +123,35 @@
         android:layout_height="wrap_content"
         android:id="@+id/imageButton11"
         android:src="@drawable/plus"
-        android:layout_above="@+id/editText4"
-        android:layout_alignLeft="@+id/imageButton10"
-        android:layout_alignStart="@+id/imageButton10" />
+        android:layout_alignTop="@+id/to"
+        android:layout_toRightOf="@+id/to"
+        android:layout_toEndOf="@+id/to" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:ems="10"
+        android:id="@+id/editText6"
+        android:hint="d/time"
+        android:layout_alignBottom="@+id/editText4"
+        android:layout_toRightOf="@+id/editText4"
+        android:layout_alignRight="@+id/imageButton11"
+        android:layout_alignEnd="@+id/imageButton11" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:ems="10"
+        android:id="@+id/editText7"
+        android:hint="r/time"
+        android:visibility="visible"
+        android:layout_alignBottom="@+id/editText5"
+        android:layout_alignLeft="@+id/editText6"
+        android:layout_alignStart="@+id/editText6"
+        android:layout_alignRight="@+id/editText6"
+        android:layout_alignEnd="@+id/editText6" />
+
 </RelativeLayout>
   </ScrollView>

@@ -1,6 +1,7 @@
 package media.apis.android.example.packagecom.blue_bus;
 
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -12,6 +13,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Switch;
+import android.widget.TimePicker;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -24,7 +26,10 @@ public class Add extends ActionBarActivity {
 
     private Calendar myCalendar1;
     private Calendar myCalendar2;
-    private EditText returnT, depart;
+    private EditText returnT, depart, departTime, returnTime;
+
+    public static final String START = "final";
+    public static final String DESTINATION ="destination";// DEPART_DATE, RETURN_DATE, DEPART_TIME, RETURN_TIME;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,14 +37,17 @@ public class Add extends ActionBarActivity {
         depart = (EditText) findViewById(R.id.editText4);
         returnT = (EditText) findViewById(R.id.editText5);
         returnT.setVisibility(View.GONE);
+        departTime = (EditText) findViewById(R.id.editText6);
+        returnTime = (EditText) findViewById(R.id.editText7);
+        returnTime.setVisibility(View.GONE);
 
         final ImageButton returnCalendar = (ImageButton) findViewById(R.id.imageButton4);
         returnCalendar.setVisibility(View.GONE);
 
         ImageButton departCalendar = (ImageButton) findViewById(R.id.imageButton3);
 
-        AutoCompleteTextView from = (AutoCompleteTextView) findViewById(R.id.from);
-        AutoCompleteTextView to = (AutoCompleteTextView) findViewById(R.id.to);
+        final AutoCompleteTextView from = (AutoCompleteTextView) findViewById(R.id.from);
+        final AutoCompleteTextView to = (AutoCompleteTextView) findViewById(R.id.to);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_dropdown_item_1line, COUNTRIES);
         from.setAdapter(adapter);
@@ -53,88 +61,141 @@ public class Add extends ActionBarActivity {
                 if (isChecked) {
                     returnT.setVisibility(View.VISIBLE);
                     returnCalendar.setVisibility(View.VISIBLE);
+                    returnTime.setVisibility(View.VISIBLE);
                 } else {
                     returnT.setVisibility(View.GONE);
                     returnCalendar.setVisibility(View.GONE);
+                    returnTime.setVisibility(View.GONE);
                 }
             }
         });
 
         myCalendar1 = Calendar.getInstance();
         myCalendar2 = Calendar.getInstance();
-        final DatePickerDialog.OnDateSetListener date1 = new DatePickerDialog.OnDateSetListener() {
 
+        final DatePickerDialog.OnDateSetListener date1 = new DatePickerDialog.OnDateSetListener() {
             @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 // TODO Auto-generated method stub
                 myCalendar1.set(Calendar.YEAR, year);
                 myCalendar1.set(Calendar.MONTH, monthOfYear);
                 myCalendar1.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                 updateReturnLabel();
-            }
 
+               // Calendar mcurrentTime = Calendar.getInstance();
+                int hour = myCalendar2.get(Calendar.HOUR_OF_DAY);
+                int minute = myCalendar2.get(Calendar.MINUTE);
+                TimePickerDialog mTimePicker;
+                mTimePicker = new TimePickerDialog(Add.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        returnTime.setText( selectedHour + ":" + selectedMinute);
+                    }
+                }, hour, minute, true);
+                // mTimePicker.setTitle("Select Time");
+                mTimePicker.show();
+            }
         };
 
         final DatePickerDialog.OnDateSetListener date2 = new DatePickerDialog.OnDateSetListener() {
-
             @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 // TODO Auto-generated method stub
                 myCalendar2.set(Calendar.YEAR, year);
                 myCalendar2.set(Calendar.MONTH, monthOfYear);
                 myCalendar2.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                 updateDepartLabel();
-            }
 
+                // Calendar mcurrentTime = Calendar.getInstance();
+                int hour = myCalendar1.get(Calendar.HOUR_OF_DAY);
+                int minute = myCalendar1.get(Calendar.MINUTE);
+                TimePickerDialog mTimePicker;
+                mTimePicker = new TimePickerDialog(Add.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        departTime.setText( selectedHour + ":" + selectedMinute);
+                    }
+                }, hour, minute, true);
+                // mTimePicker.setTitle("Select Time");
+                mTimePicker.show();
+            }
         };
 
         returnCalendar.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 new DatePickerDialog(Add.this, date1, myCalendar1
                         .get(Calendar.YEAR), myCalendar1.get(Calendar.MONTH),
                         myCalendar1.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
 
+        departTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                Calendar mcurrentTime = Calendar.getInstance();
+                int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+                int minute = mcurrentTime.get(Calendar.MINUTE);
+                TimePickerDialog mTimePicker;
+                mTimePicker = new TimePickerDialog(Add.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        departTime.setText( selectedHour + ":" + selectedMinute);
+                    }
+                }, hour, minute, true);
+                // mTimePicker.setTitle("Select Time");
+                mTimePicker.show();
+            }
+        });
+
+        returnTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                Calendar mcurrentTime = Calendar.getInstance();
+                int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+                int minute = mcurrentTime.get(Calendar.MINUTE);
+                TimePickerDialog mTimePicker;
+                mTimePicker = new TimePickerDialog(Add.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        returnTime.setText( selectedHour + ":" + selectedMinute);
+                    }
+                }, hour, minute, true);
+                //    mTimePicker.setTitle("Select Time");
+                mTimePicker.show();
             }
         });
 
         departCalendar.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 new DatePickerDialog(Add.this, date2, myCalendar2
                         .get(Calendar.YEAR), myCalendar2.get(Calendar.MONTH),
                         myCalendar2.get(Calendar.DAY_OF_MONTH)).show();
-
             }
         });
 
         returnT.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 new DatePickerDialog(Add.this, date1, myCalendar1
                         .get(Calendar.YEAR), myCalendar1.get(Calendar.MONTH),
                         myCalendar1.get(Calendar.DAY_OF_MONTH)).show();
-
             }
         });
 
         depart.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 new DatePickerDialog(Add.this, date2, myCalendar2
                         .get(Calendar.YEAR), myCalendar2.get(Calendar.MONTH),
                         myCalendar2.get(Calendar.DAY_OF_MONTH)).show();
-
             }
         });
 
@@ -165,24 +226,35 @@ public class Add extends ActionBarActivity {
             }
         });
 
+        ImageButton go = (ImageButton) findViewById(R.id.imageButton5);
+        go.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               // startActivity(new Intent(getApplicationContext(), RideOfferDetails.class));
+                Intent intent = new Intent(getApplicationContext(), RideOfferDetails.class);
+                intent.putExtra(START, String.valueOf(from.getText()));
+                intent.putExtra(DESTINATION, String.valueOf(to.getText()));
+               // intent.putExtra(DEPART_DATE, String.valueOf(depart.getText()));
+                //intent.putExtra(RETURN_DATE, String.valueOf(returnT.getText()));
+               // intent.putExtra(DEPART_TIME, String.valueOf(departTime.getText()));
+               // intent.putExtra(RETURN_TIME, String.valueOf(returnTime.getText()));
+                startActivity(intent);
+               // START = String.valueOf(from.getText());
+              //  DESTINATION = String.valueOf(to.getText());
+            }
+        });
     }
 
     private void updateReturnLabel() {
-
         String myFormat = "dd/MM/yy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-
         returnT.setText(sdf.format(myCalendar1.getTime()));
-
     }
 
     private void updateDepartLabel() {
-
         String myFormat = "dd/MM/yy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-
         depart.setText(sdf.format(myCalendar2.getTime()));
-
     }
 
     private static final String[] COUNTRIES = new String[] {
@@ -194,5 +266,4 @@ public class Add extends ActionBarActivity {
             "Runcorn - Daresbury Court", "Westbury - Heywood House", "Winnersh – 1020 Eskdale Road",
             "Wolverhampton - Trinity Court"
     };
-
 }

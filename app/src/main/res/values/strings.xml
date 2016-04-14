@@ -7,10 +7,8 @@
     <string name="action_settings">Settings</string>
 
     <string-array name="gender">
-        <item>Select your gender</item>
         <item>Male</item>
         <item>Female</item>
-        <item>Have no idea</item>
     </string-array>
 
     <string name="title_activity_login">Sign in</string>
@@ -29,6 +27,7 @@
     </string>
     <string name="title_activity_register">Register</string>
     <string name="title_activity_map">Map</string>
+    <string name="title_activity_ride_offer_details">Offer Details</string>
 
 
 </resources>
