@@ -150,7 +150,9 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
                         Bundle extras = getIntent().getExtras();
                         Boolean type = (Boolean)extras.get("startPoint or terminal");
                         Boolean searchPage = (Boolean)extras.get("searchPage or addPage");
-                        if (searchPage=true) {
+                        System.out.println("searchPage is "+searchPage);
+                        System.out.println("address is "+addressTitle);
+                        if (searchPage==true) {
                             //return to Search Page
                             Intent intent = new Intent(Map.this, Search.class);
                             //save(transfer) the option to Search Page
@@ -181,7 +183,7 @@ public class Map extends FragmentActivity implements OnMapReadyCallback {
             "Dublin - Ireland","Dundee - Maryfield House", "Guildford - Deacon Field",
             "Leeds - Wellington Place", "Linwood - St James Business Park", "Liverpool - Old Hall Street",
             "Livingston - Appleton Parkway", "London, Triton Square", "Nottingham - Building 10.1",
-            "Runcorn - Daresbury Court", "Westbury - Heywood House", "Winnersh – 1020 Eskdale Road",
+            "Runcorn - Daresbury Court", "Westbury - Heywood House", "Winnersh - 1020 Eskdale Road",
             "Wolverhampton - Trinity Court"
     };
 

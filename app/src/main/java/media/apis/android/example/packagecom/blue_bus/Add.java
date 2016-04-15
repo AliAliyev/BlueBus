@@ -2,7 +2,9 @@ package media.apis.android.example.packagecom.blue_bus;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 import java.text.SimpleDateFormat;
@@ -31,9 +34,17 @@ public class Add extends ActionBarActivity {
     public static final String START = "final";
     public static final String DESTINATION ="destination";// DEPART_DATE, RETURN_DATE, DEPART_TIME, RETURN_TIME;
 
+    Context context = this;
+    private SharedPreferences sharedPref;
+    private SharedPreferences.Editor editor;
+    private SharedPreferences sharedPref2;
+    private SharedPreferences.Editor editor2;
+
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add);
+
         depart = (EditText) findViewById(R.id.editText4);
         returnT = (EditText) findViewById(R.id.editText5);
         returnT.setVisibility(View.GONE);
@@ -198,6 +209,44 @@ public class Add extends ActionBarActivity {
                         myCalendar2.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
+
+        sharedPref = context.getSharedPreferences("address", MODE_WORLD_READABLE);
+
+        //receive data from Map page
+        Bundle extras = getIntent().getExtras();
+        if (extras!=null&&getIntent()!=null){
+            String address =(String)extras.get("selectedAddress");
+            Boolean type = (Boolean)extras.get("t");
+
+            if (type==true) {
+                //save the option as start point
+                from.setText(address, TextView.BufferType.EDITABLE);
+                editor = sharedPref.edit();
+                editor.putString("SP", address);
+                editor.commit();
+
+                //if terminal point is previously set
+                if (sharedPref.contains("TP")){
+                    String TP = sharedPref.getString("TP",null);
+                    to.setText(TP, TextView.BufferType.EDITABLE);
+                    System.out.println("TP is " + TP);
+                }
+            } else {
+                //save the option as terminal point
+                to.setText(address, TextView.BufferType.EDITABLE);
+                editor = sharedPref.edit();
+                editor.putString("TP", address);
+                editor.commit();
+
+                //if start point is previously set
+                if (sharedPref.contains("SP")){
+                    String SP = sharedPref.getString("SP",null);
+                    from.setText(SP, TextView.BufferType.EDITABLE);
+                    System.out.println("SP is "+SP);}
+            }
+        } else {
+            sharedPref.edit().clear().commit();
+        }
 
         ImageButton addMapFrom = (ImageButton) findViewById(R.id.imageButton10);
         addMapFrom.setOnClickListener(new View.OnClickListener() {
