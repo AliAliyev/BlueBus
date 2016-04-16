@@ -52,8 +52,14 @@
             android:parentActivityName=".Add"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".SearchResult"
+            android:label="Search Result"
+            android:parentActivityName=".Search"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".Map"
             android:label="@string/title_activity_map" />
+
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

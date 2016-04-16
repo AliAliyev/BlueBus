@@ -1,27 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:nestedScrollingEnabled="false">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="457dp"
-        android:weightSum="1">
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/showData"
+        android:layout_gravity="left|center_vertical" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="New Text"
-            android:textSize="25dp"
-            android:fontFamily="Arial"
-            android:id="@+id/textView"
-            android:layout_weight="0.04" />
-
-        <ListView
-            android:layout_width="match_parent"
-            android:layout_height="354dp"
-            android:id="@+id/listView" />
-    </LinearLayout>
 
 </LinearLayout>

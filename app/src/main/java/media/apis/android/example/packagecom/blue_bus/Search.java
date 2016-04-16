@@ -44,6 +44,8 @@ public class Search extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search);
         sharedPref = context.getSharedPreferences("address", MODE_WORLD_READABLE);
+        EditText editText = (EditText) findViewById(R.id.editText);
+        EditText editText2 = (EditText) findViewById(R.id.editText2);
 
         //receive data from Map page
         Bundle extras = getIntent().getExtras();
@@ -51,10 +53,10 @@ public class Search extends ActionBarActivity {
             String address =(String)extras.get("selectedAddress");
             Boolean type = (Boolean)extras.get("t");
 
+
             if (type==true) {
                 //save the option as start point
-                EditText editText = (EditText) findViewById(R.id.editText);
-                EditText editText2 = (EditText) findViewById(R.id.editText2);
+
                 editText.setText(address, TextView.BufferType.EDITABLE);
                 editor = sharedPref.edit();
                 editor.putString("SP", address);
@@ -68,8 +70,6 @@ public class Search extends ActionBarActivity {
                 }
             } else {
                 //save the option as terminal point
-                EditText editText = (EditText) findViewById(R.id.editText);
-                EditText editText2 = (EditText) findViewById(R.id.editText2);
                 editText2.setText(address, TextView.BufferType.EDITABLE);
                 editor = sharedPref.edit();
                 editor.putString("TP", address);
@@ -177,23 +177,34 @@ public class Search extends ActionBarActivity {
             @Override
 
             public void onClick(View v) {
+                //to save the addresses typed or selected by user
+                EditText editText = (EditText) findViewById(R.id.editText);
+                EditText editText2 = (EditText) findViewById(R.id.editText2);
+                String sPoint=editText.getText().toString();
+                String tPoint=editText2.getText().toString();
+                sharedPref = context.getSharedPreferences("address", MODE_WORLD_READABLE);
+                editor = sharedPref.edit();
+                editor.putString("SP", sPoint);
+                editor.putString("TP", tPoint);
+                editor.commit();
+
                 boolean cancel = false;
                 View focusView = null;
-                if (!TextUtils.isEmpty(SP)&&!TextUtils.isEmpty(TP)){
+                if (!TextUtils.isEmpty(sPoint)&&!TextUtils.isEmpty(tPoint)){
                     System.out.println("both not empty");
-                    if (!SP.equals(TP)){
-                        System.out.println("not equal");
-                        Intent intent = new Intent(Search.this, SearchResult.class);
-                        System.out.println("SearchResult page is going to be launched");
+                    if (!sPoint.equals(tPoint)){
+                        //System.out.println("not equal");
+                        //Intent intent = new Intent(Search.this, SearchResult.class);
+                        //System.out.println("SearchResult page is going to be launched");
                         //intent.putExtra("startPoint or terminal", start);
                         //intent.putExtra("searchPage or addPage", searchPage);
-                        startActivity(intent);
+                        //startActivity(intent);
                     } else {
                         terminalPoint.setError("Start point and terminal point are the same place");
                         focusView = terminalPoint;
                         cancel = true;
                     }
-                } else if (TextUtils.isEmpty(SP)){
+                } else if (TextUtils.isEmpty(sPoint)){
                     startPoint.setError("Start point needs to be set");
                     focusView = startPoint;
                     cancel = true;
@@ -206,6 +217,11 @@ public class Search extends ActionBarActivity {
                     // There was an error; don't attempt login and focus the first
                     // form field with an error.
                     focusView.requestFocus();
+                } else {
+                    System.out.println("Intent created");
+                    Intent intent = new Intent(Search.this, SearchResult.class);
+                    System.out.println("SearchResult page is going to be launched");
+                    startActivity(intent);
                 }
             }
         });
