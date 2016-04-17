@@ -183,6 +183,9 @@ public class Register extends AppCompatActivity  {
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
+        mFirstNameView.setError(null);
+        mFamilyNameView.setError(null);
+        mAgeView.setError(null);
 
         // Store values at the time of the login attempt.
         String firstName = mFirstNameView.getText().toString();
@@ -200,7 +203,6 @@ public class Register extends AppCompatActivity  {
             focusView = mPasswordView;
             cancel = true;
         }
-
         // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
             mEmailView.setError(getString(R.string.error_field_required));
@@ -211,25 +213,21 @@ public class Register extends AppCompatActivity  {
             focusView = mEmailView;
             cancel = true;
         }
-
-        if (TextUtils.isEmpty(firstName)) {
-            mFirstNameView.setError(getString(R.string.error_field_required));
-            focusView = mFirstNameView;
-            cancel = true;
-        }
-
-        if (TextUtils.isEmpty(familyName)) {
-            mFamilyNameView.setError(getString(R.string.error_field_required));
-            focusView = mFamilyNameView;
-            cancel = true;
-        }
-
         if (TextUtils.isEmpty(age)) {
             mAgeView.setError(getString(R.string.error_field_required));
             focusView = mAgeView;
             cancel = true;
         }
-
+        if (TextUtils.isEmpty(familyName)) {
+            mFamilyNameView.setError(getString(R.string.error_field_required));
+            focusView = mFamilyNameView;
+            cancel = true;
+        }
+        if (TextUtils.isEmpty(firstName)) {
+            mFirstNameView.setError(getString(R.string.error_field_required));
+            focusView = mFirstNameView;
+            cancel = true;
+        }
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
@@ -238,8 +236,7 @@ public class Register extends AppCompatActivity  {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             register(firstName, familyName, age, email, password);
-           // if(registerSuccessful)
-                userLogin(email, password);
+            userLogin(email, password);
             // mAuthTask = new UserLoginTask(email, password);
             // mAuthTask.execute((Void) null);
         }
