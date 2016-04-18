@@ -2,32 +2,31 @@ package media.apis.android.example.packagecom.blue_bus;
 
 import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -48,7 +47,9 @@ public class Add extends ActionBarActivity {
     private AutoCompleteTextView from, to;
     private Switch returnTrip;
     public static final String START = "final";
-    public static final String DESTINATION ="destination";// DEPART_DATE, RETURN_DATE, DEPART_TIME, RETURN_TIME;
+    public static final String DESTINATION ="destination";//  RETURN_DATE, RETURN_TIME;
+    public static final String DEPART_DATE ="depart_date";
+    public static final String RETURN_DATE ="return_date";
 
     Context context = this;
     private SharedPreferences sharedPref;
@@ -68,6 +69,7 @@ public class Add extends ActionBarActivity {
         returnTime = (EditText) findViewById(R.id.editText7);
         returnTime.setVisibility(View.GONE);
 
+
         final ImageButton returnCalendar = (ImageButton) findViewById(R.id.imageButton4);
         returnCalendar.setVisibility(View.GONE);
 
@@ -78,7 +80,7 @@ public class Add extends ActionBarActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_dropdown_item_1line, OFFICES);
 
-      //  final burtuAdapteris adapter = new burtuAdapteris(this, android.R.layout.simple_dropdown_item_1line, OFFICES);
+      //final burtuAdapteris adapter = new burtuAdapteris(this, android.R.layout.simple_dropdown_item_1line, OFFICES);
 
         from.setAdapter(adapter);
         to.setAdapter(adapter);
@@ -88,9 +90,9 @@ public class Add extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 from.showDropDown();
+
             }
         });
-
         to.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -549,6 +551,10 @@ public class Add extends ActionBarActivity {
                         returnT.setError(getString(R.string.error_field_required));
                         focusView = returnT;
                         cancel = true;
+                    }else if(!isValidDate(returnText)) {
+                        returnT.setError("please enter a valid date");
+                        focusView = returnT;
+                        cancel = true;
                     }
                 }
                 if (TextUtils.isEmpty(departTimeText)) {
@@ -558,6 +564,10 @@ public class Add extends ActionBarActivity {
                 }
                 if (TextUtils.isEmpty(departText)) {
                     depart.setError(getString(R.string.error_field_required));
+                    focusView = depart;
+                    cancel = true;
+                } else if(!isValidDate(departText)) {
+                    depart.setError("please enter a valid date");
                     focusView = depart;
                     cancel = true;
                 }
@@ -587,58 +597,190 @@ public class Add extends ActionBarActivity {
                 if (cancel) {
                     focusView.requestFocus();
                 } else {
+                    String[] departTimeParts = departTimeText.split(":");
+                    String departTimePart1 = departTimeParts[0];
+                    String departTimePart2 = departTimeParts[1];
+                    String[] departDateParts = departText.split("/");
+                    String departDatePart1 = departDateParts[0];
+                    String departDatePart2 = departDateParts[1];
+                    String departDatePart3 = departDateParts[2];
+
+                    Calendar c = Calendar.getInstance();
+                    int day = c.get(Calendar.DAY_OF_MONTH);
+                    int month = c.get(Calendar.MONTH);
+                    int year = c.get(Calendar.YEAR);
+                    int hour = c.get(Calendar.HOUR_OF_DAY);
+                    int minute = c.get(Calendar.MINUTE);
+
                     if (returnTrip.isChecked()) {
-                        if (departText.equalsIgnoreCase(returnText)) {
-                            String[] departParts = departTimeText.split(":");
-                            String departPart1 = departParts[0];
-                            String departPart2 = departParts[1];
-                            String[] returnParts = returnTimeText.split(":");
-                            String returnPart1 = returnParts[0];
-                            String returnPart2 = returnParts[1];
+                        if(Integer.parseInt(departDatePart1)==day && Integer.parseInt(departDatePart2)==month+1 &&
+                                Integer.parseInt(departDatePart3)==year) {
+                            if(Integer.parseInt(departTimePart1)==hour && Integer.parseInt(departTimePart2) < minute)
+                                departTime.setError("please select a future time");
+                            else if(Integer.parseInt(departTimePart1) < hour)
+                                departTime.setError("please select a future time");
+                             else {
+                                if (departText.equalsIgnoreCase(returnText)) {
+                                    String[] departParts = departTimeText.split(":");
+                                    String departPart1 = departParts[0];
+                                    String departPart2 = departParts[1];
+                                    String[] returnParts = returnTimeText.split(":");
+                                    String returnPart1 = returnParts[0];
+                                    String returnPart2 = returnParts[1];
 
-                            if (Integer.parseInt(departPart1) == Integer.parseInt(returnPart1)) {
-                                if (Integer.parseInt(departPart2) > Integer.parseInt(returnPart2))
-                                    returnTime.setError("Please choose a return time after the depart time");
-                                else  goToRideDetailsPage();
+                                    if (Integer.parseInt(departPart1) == Integer.parseInt(returnPart1)) {
+                                        if (Integer.parseInt(departPart2) > Integer.parseInt(returnPart2))
+                                            returnTime.setError("Please choose a return time after the depart time");
+                                        else goToRideDetailsPage();
+                                    } else if (Integer.parseInt(departPart1) > Integer.parseInt(returnPart1))
+                                        returnTime.setError("Please choose a return time after the depart time");
+                                    else goToRideDetailsPage();
+                                } else {
+                                    String[] departParts = departText.split("/");
+                                    String departPart1 = departParts[0];
+                                    String departPart2 = departParts[1];
+                                    String departPart3 = departParts[2];
+                                    String[] returnParts = returnText.split("/");
+                                    String returnPart1 = returnParts[0];
+                                    String returnPart2 = returnParts[1];
+                                    String returnPart3 = returnParts[2];
+
+                                    if (Integer.parseInt(departPart3) < Integer.parseInt(returnPart3))
+                                        goToRideDetailsPage();
+                                    else if (Integer.parseInt(departPart3) > Integer.parseInt(returnPart3))
+                                        returnT.setError("Please choose a return date after the depart date");
+                                    else if (Integer.parseInt(departPart3) == Integer.parseInt(returnPart3)) {
+                                        if (Integer.parseInt(departPart2) < Integer.parseInt(returnPart2))
+                                            goToRideDetailsPage();
+                                        else if (Integer.parseInt(departPart2) > Integer.parseInt(returnPart2))
+                                            returnT.setError("Please choose a return date after the depart date");
+                                        else if (Integer.parseInt(departPart2) == Integer.parseInt(returnPart2)) {
+                                            if (Integer.parseInt(departPart1) < Integer.parseInt(returnPart1))
+                                                goToRideDetailsPage();
+                                            else if (Integer.parseInt(departPart1) > Integer.parseInt(returnPart1))
+                                                returnT.setError("Please choose a return date after the depart date");
+                                        }
+                                    }
+                                }
                             }
-                            else if (Integer.parseInt(departPart1) > Integer.parseInt(returnPart1))
-                                returnTime.setError("Please choose a return time after the depart time");
-                            else   goToRideDetailsPage();
                         } else {
-                            String[] departParts = departText.split("/");
-                            String departPart1 = departParts[0];
-                            String departPart2 = departParts[1];
-                            String departPart3 = departParts[2];
-                            String[] returnParts = returnText.split("/");
-                            String returnPart1 = returnParts[0];
-                            String returnPart2 = returnParts[1];
-                            String returnPart3 = returnParts[2];
+                            if (departText.equalsIgnoreCase(returnText)) {
+                                String[] departParts = departTimeText.split(":");
+                                String departPart1 = departParts[0];
+                                String departPart2 = departParts[1];
+                                String[] returnParts = returnTimeText.split(":");
+                                String returnPart1 = returnParts[0];
+                                String returnPart2 = returnParts[1];
 
-                            if (Integer.parseInt(departPart3) > Integer.parseInt(returnPart3))
-                                returnT.setError("Please choose a return date after the depart date");
-                            else if (Integer.parseInt(departPart2) > Integer.parseInt(returnPart2))
-                                returnT.setError("Please choose a return date after the depart date");
-                            else if (Integer.parseInt(departPart1) > Integer.parseInt(returnPart1))
-                                returnT.setError("Please choose a return date after the depart date");
-                            else
-                                goToRideDetailsPage();
+                                if (Integer.parseInt(departPart1) == Integer.parseInt(returnPart1)) {
+                                    if (Integer.parseInt(departPart2) > Integer.parseInt(returnPart2))
+                                        returnTime.setError("Please choose a return time after the depart time");
+                                    else goToRideDetailsPage();
+                                } else if (Integer.parseInt(departPart1) > Integer.parseInt(returnPart1))
+                                    returnTime.setError("Please choose a return time after the depart time");
+                                else goToRideDetailsPage();
+                            } else {
+                                String[] departParts = departText.split("/");
+                                String departPart1 = departParts[0];
+                                String departPart2 = departParts[1];
+                                String departPart3 = departParts[2];
+                                String[] returnParts = returnText.split("/");
+                                String returnPart1 = returnParts[0];
+                                String returnPart2 = returnParts[1];
+                                String returnPart3 = returnParts[2];
+
+                                if (Integer.parseInt(departPart3) < Integer.parseInt(returnPart3))
+                                    goToRideDetailsPage();
+                                else if (Integer.parseInt(departPart3) > Integer.parseInt(returnPart3))
+                                    returnT.setError("Please choose a return date after the depart date");
+                                else if (Integer.parseInt(departPart3) == Integer.parseInt(returnPart3)) {
+                                    if (Integer.parseInt(departPart2) < Integer.parseInt(returnPart2))
+                                        goToRideDetailsPage();
+                                    else if (Integer.parseInt(departPart2) > Integer.parseInt(returnPart2))
+                                        returnT.setError("Please choose a return date after the depart date");
+                                    else if (Integer.parseInt(departPart2) == Integer.parseInt(returnPart2)) {
+                                        if (Integer.parseInt(departPart1) < Integer.parseInt(returnPart1))
+                                            goToRideDetailsPage();
+                                        else if (Integer.parseInt(departPart1) > Integer.parseInt(returnPart1))
+                                            returnT.setError("Please choose a return date after the depart date");
+                                    }
+                                }
+                            }
                         }
                     }
-                    else goToRideDetailsPage();
+                    else {
+                        if(Integer.parseInt(departDatePart1)==day && Integer.parseInt(departDatePart2)==month+1 &&
+                                Integer.parseInt(departDatePart3)==year) {
+                            if(Integer.parseInt(departTimePart1)==hour && Integer.parseInt(departTimePart2) < minute)
+                                departTime.setError("please select a future time");
+                            else if(Integer.parseInt(departTimePart1) < hour)
+                                departTime.setError("please select a future time");
+                            else //depart.setText(String.valueOf(minute));
+                                goToRideDetailsPage();
+                        } else
+                             goToRideDetailsPage();
+                    }
                 }
             }
         });
     }
 
     private void goToRideDetailsPage() {
-        Intent intent = new Intent(getApplicationContext(), RideOfferDetails.class);
-        intent.putExtra(START, String.valueOf(from.getText()));
-        intent.putExtra(DESTINATION, String.valueOf(to.getText()));
-        // intent.putExtra(DEPART_DATE, String.valueOf(depart.getText()));
-        // intent.putExtra(RETURN_DATE, String.valueOf(returnT.getText()));
-        // intent.putExtra(DEPART_TIME, String.valueOf(departTime.getText()));
-        // intent.putExtra(RETURN_TIME, String.valueOf(returnTime.getText()));
-        startActivity(intent);
+        final ProgressDialog loading;
+        loading = ProgressDialog.show(Add.this, "Please Wait", null, true, true);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                Intent intent = new Intent(getApplicationContext(), RideOfferDetails.class);
+                intent.putExtra(START, String.valueOf(from.getText()));
+                intent.putExtra(DESTINATION, String.valueOf(to.getText()));
+                intent.putExtra(DEPART_DATE, String.valueOf(departTime.getText()).concat(" ").concat(String.valueOf(depart.getText())));
+                intent.putExtra(RETURN_DATE, String.valueOf(returnTime.getText()).concat(" ").concat(String.valueOf(returnT.getText())));
+                // intent.putExtra(DEPART_TIME, String.valueOf(departTime.getText()));
+                // intent.putExtra(RETURN_TIME, String.valueOf(returnTime.getText()));
+                startActivity(intent);
+                loading.dismiss();
+            }
+        }, 2000);
+
+       // loading.dismiss();
+    }
+
+    private boolean isValidDate(String date) {
+
+        if (dateIsValid(date)) {
+
+            // from.setText(clone1);
+
+            String[] parts = date.split("/");
+            String part1 = parts[0];
+            String part2 = parts[1];
+            String part3 = parts[2];
+            boolean valid=true;
+            for(char c: part3.toCharArray()) {
+                if(!Character.isDigit(c))
+                {
+                    valid = false;
+                    break;
+                }
+            }
+            if (valid && Integer.parseInt(part1) >= 1 && Integer.parseInt(part1) <= 31 &&
+                    Integer.parseInt(part2) >= 1 && Integer.parseInt(part2) <= 12 &&
+                    Integer.parseInt(part3) >= 2016 && Integer.parseInt(part3) <= 2099)
+                return true;
+        }
+        return false;
+    }
+
+private boolean dateIsValid(String date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        dateFormat.setLenient(false);
+        try {
+            dateFormat.parse(date.trim());
+        } catch (ParseException pe) {
+            return false;
+        }
+        return true;
     }
 
     private boolean isValidLocation(String location) {
@@ -650,13 +792,13 @@ public class Add extends ActionBarActivity {
     }
 
     private void updateReturnLabel() {
-        String myFormat = "dd/MM/yy"; //In which you need put here
+        String myFormat = "dd/MM/yyyy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ENGLISH);
         returnT.setText(sdf.format(myCalendar.getTime()));
     }
 
     private void updateDepartLabel() {
-        String myDateFormat = "dd/MM/yy"; //In which you need put here
+        String myDateFormat = "dd/MM/yyyy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myDateFormat, Locale.ENGLISH);
         depart.setText(sdf.format(myCalendar.getTime()));
     }

@@ -1,12 +1,15 @@
 package media.apis.android.example.packagecom.blue_bus;
 
 import android.annotation.TargetApi;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,31 +22,21 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class RideOfferDetails extends AppCompatActivity {
+@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+public class RideOfferDetails extends AppCompatActivity implements NumberPicker.OnValueChangeListener {
 
     private static final String RIDES_URL = "http://halfbloodprince.16mb.com/rides.php";
     NumberPicker np;
+    private EditText seats;
+
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ride_offer_details);
-       // Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-       // setSupportActionBar(toolbar);
-
-        np = (NumberPicker) findViewById(R.id.numberPicker);
-        np.setMinValue(0);
-        np.setMaxValue(8);
-        np.setWrapSelectorWheel(true);
-
-        np.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                // TODO Auto-generated method stub
-
-            }
-        });
+        // Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        // setSupportActionBar(toolbar);
+        //np = (NumberPicker) findViewById(R.id.numberPicker);
 
 /*
        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -57,25 +50,126 @@ public class RideOfferDetails extends AppCompatActivity {
 */
 
         final TextView start = (TextView) findViewById(R.id.textView5);
-        final TextView dest =  (TextView) findViewById(R.id.textView7);
+        final TextView dest = (TextView) findViewById(R.id.textView7);
+        final TextView returnStart = (TextView) findViewById(R.id.textView12);
+        final TextView returnDest = (TextView) findViewById(R.id.textView14);
+        final TextView returnDate = (TextView) findViewById(R.id.textView15);
+        final TextView arrow = (TextView) findViewById(R.id.textView13);
+        final TextView border = (TextView) findViewById(R.id.textView16);
+        returnStart.setVisibility(View.GONE);
+        returnDest.setVisibility(View.GONE);
+        returnDate.setVisibility(View.GONE);
+        arrow.setVisibility(View.GONE);
+        border.setVisibility(View.GONE);
+        final TextView date = (TextView) findViewById(R.id.textView10);
         final EditText comment = (EditText) findViewById(R.id.editText8);
         Intent intent = getIntent();
-        final String startT = intent.getStringExtra(Add.START);// + " " + Add.DEPART_DATE + " " + Add.DEPART_TIME);
-        final String destT = intent.getStringExtra(Add.DESTINATION);// + " " + Add.DEPART_DATE + " " + Add.DEPART_TIME);
+        final String startT = intent.getStringExtra(Add.START);
+        final String destT = intent.getStringExtra(Add.DESTINATION);
+        final String dateT = intent.getStringExtra(Add.DEPART_DATE);
+        final String returnDateT = intent.getStringExtra(Add.RETURN_DATE); //Add.DEPART_DATE + " " + Add.DEPART_TIME);
+        if (!returnDateT.equalsIgnoreCase(" ")) {
+            returnStart.setVisibility(View.VISIBLE);
+            returnDest.setVisibility(View.VISIBLE);
+            returnDate.setVisibility(View.VISIBLE);
+            arrow.setVisibility(View.VISIBLE);
+            border.setVisibility(View.VISIBLE);
+        }
         start.setText(startT);
         dest.setText(destT);
+        date.setText(dateT);
+        returnStart.setText(destT);
+        returnDest.setText(startT);
+        returnDate.setText(returnDateT);
 
         Button publish = (Button) findViewById(R.id.button2);
         publish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            register(start.getText().toString().replace(" ", "_"), dest.getText().toString().replace(" ", "_"), "depart", "return", 5, comment.getText().toString().replace(" ", "_"));
+                seats.setError(null);
+                comment.setError(null);
+                String seatsText = seats.getText().toString();
+                String commentText = comment.getText().toString();
+                boolean cancel = false;
+                View focusView = null;
+                if (TextUtils.isEmpty(seatsText)) {
+                    seats.setError(getString(R.string.error_field_required));
+                    focusView = seats;
+                    cancel = true;
+                }
+                if (TextUtils.isEmpty(commentText)) {
+                    comment.setError(getString(R.string.error_field_required));
+                    focusView = comment;
+                    cancel = true;
+                }
+                if (cancel) {
+                    focusView.requestFocus();
+                } else {
+                    publishRide(start.getText().toString().replace(" ", "_"), dest.getText().toString().replace(" ", "_"),
+                            date.getText().toString().replace(" ", "_"), Integer.parseInt(seats.getText().toString()),
+                            comment.getText().toString().replace(" ", "_"));
+                    if (arrow.getVisibility() == View.VISIBLE)
+                        publishRide(dest.getText().toString().replace(" ", "_"), start.getText().toString().replace(" ", "_"),
+                                returnDate.getText().toString().replace(" ", "_"), Integer.parseInt(seats.getText().
+                                        toString()), comment.getText().toString().replace(" ", "_"));
+                }
+            }
+        });
+
+        seats = (EditText) findViewById(R.id.editText9);
+        seats.setFocusable(false);
+        seats.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                show();
+            }
+        });
+
+        seats.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+              if(seats.hasFocus())  show();
             }
         });
     }
 
-    private void register(String start, String destination, String depart_time, String return_time, int seats, String comment) {
-        String urlSuffix = "?start="+start+"&destination="+destination+"&depart_time="+depart_time+"&return_time="+return_time+"&seats="+seats+"&comment="+comment;
+    @Override
+    public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+        Log.i("value is", "" + newVal);
+    }
+
+    public void show() {
+
+        final Dialog d = new Dialog(RideOfferDetails.this);
+        d.setTitle("NumberPicker");
+        d.setContentView(R.layout.dialog);
+        Button b1 = (Button) d.findViewById(R.id.button1);
+        Button b2 = (Button) d.findViewById(R.id.button2);
+        final NumberPicker np = (NumberPicker) d.findViewById(R.id.numberPicker1);
+        np.setMaxValue(8);   // max value 8
+        np.setMinValue(0);   // min value 0
+        np.setWrapSelectorWheel(false);
+        np.setOnValueChangedListener(this);
+        b1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                seats.setText(String.valueOf(np.getValue())); //set the value to textview
+                d.dismiss();
+            }
+        });
+        b2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                d.dismiss(); // dismiss the dialog
+            }
+        });
+        d.show();
+    }
+
+    private void publishRide(String start, String destination, String depart_time, int seats, String comment) {
+        String urlSuffix = "?start="+start+"&destination="+destination+"&depart_time="+depart_time+"&seats="
+                +seats+"&comment="+comment;
         class RegisterUser extends AsyncTask<String, Void, String> {
 
             ProgressDialog loading;
