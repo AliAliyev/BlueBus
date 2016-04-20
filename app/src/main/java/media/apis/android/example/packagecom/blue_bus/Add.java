@@ -62,8 +62,6 @@ public class Add extends AppCompatActivity implements NavigationView.OnNavigatio
     Context context = this;
     private SharedPreferences sharedPref;
     private SharedPreferences.Editor editor;
-    private SharedPreferences sharedPref2;
-    private SharedPreferences.Editor editor2;
     UserSessionManager session;
 
     protected void onCreate(Bundle savedInstanceState) {

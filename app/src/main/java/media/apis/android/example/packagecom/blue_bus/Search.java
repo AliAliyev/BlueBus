@@ -1,11 +1,14 @@
 package media.apis.android.example.packagecom.blue_bus;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -22,10 +25,15 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+
+import static java.util.Calendar.HOUR_OF_DAY;
+import static java.util.Calendar.MINUTE;
 
 /**
  * Created by Ali on 03/12/2015.
@@ -80,8 +88,8 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
         }
 
         sharedPref = context.getSharedPreferences("address", MODE_WORLD_READABLE);
-        EditText editText = (EditText) findViewById(R.id.editText);
-        EditText editText2 = (EditText) findViewById(R.id.editText2);
+        startPoint = (EditText) findViewById(R.id.editText);
+        terminalPoint = (EditText) findViewById(R.id.editText2);
 
         //receive data from Map page
         Bundle extras = getIntent().getExtras();
@@ -89,11 +97,9 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
             String address =(String)extras.get("selectedAddress");
             Boolean type = (Boolean)extras.get("t");
 
-
+            //Check whether it is a start point or terminal point
             if (type==true) {
-                //save the option as start point
-
-                editText.setText(address, TextView.BufferType.EDITABLE);
+                startPoint.setText(address, TextView.BufferType.EDITABLE);
                 editor = sharedPref.edit();
                 editor.putString("SP", address);
                 editor.commit();
@@ -101,12 +107,11 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
                 //if terminal point is previously set
                 if (sharedPref.contains("TP")){
                     String TP = sharedPref.getString("TP",null);
-                    editText2.setText(TP, TextView.BufferType.EDITABLE);
+                    terminalPoint.setText(TP, TextView.BufferType.EDITABLE);
                     System.out.println("TP is " + TP);
                 }
             } else {
-                //save the option as terminal point
-                editText2.setText(address, TextView.BufferType.EDITABLE);
+                terminalPoint.setText(address, TextView.BufferType.EDITABLE);
                 editor = sharedPref.edit();
                 editor.putString("TP", address);
                 editor.commit();
@@ -114,7 +119,7 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
                 //if start point is previously set
                 if (sharedPref.contains("SP")){
                     String SP = sharedPref.getString("SP",null);
-                    editText.setText(SP, TextView.BufferType.EDITABLE);
+                    startPoint.setText(SP, TextView.BufferType.EDITABLE);
                     System.out.println("SP is "+SP);}
             }
         } else {
@@ -150,7 +155,7 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
 
         };
 
-        calen.setOnClickListener(new View.OnClickListener() {
+        dateText.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -161,14 +166,21 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
             }
         });
 
-        dateText.setOnClickListener(new View.OnClickListener() {
-
+        calen.setOnClickListener(new View.OnClickListener() {
+            @TargetApi(Build.VERSION_CODES.HONEYCOMB)
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
-                new DatePickerDialog(Search.this, date, myCalendar
-                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                DatePickerDialog datePickerDialog = new DatePickerDialog(Search.this, new DatePickerDialog.OnDateSetListener(){
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        myCalendar.set(Calendar.YEAR, year);
+                        myCalendar.set(Calendar.MONTH, monthOfYear);
+                        myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                        updateLabel();
+                    }
+                }, myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+                datePickerDialog.show();
             }
         });
 
@@ -203,10 +215,8 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
             }
         });
 
-        startPoint = (EditText) findViewById(R.id.editText);
-        terminalPoint = (EditText) findViewById(R.id.editText2);
-        final String SP = startPoint.getText().toString();
-        final String TP = terminalPoint.getText().toString();
+        //final String SP = startPoint.getText().toString();
+        //final String TP = terminalPoint.getText().toString();
 
         ImageButton search = (ImageButton) findViewById(R.id.imageButton2);
         search.setOnClickListener(new View.OnClickListener(){
@@ -214,28 +224,25 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
 
             public void onClick(View v) {
                 //to save the addresses typed or selected by user
-                EditText editText = (EditText) findViewById(R.id.editText);
-                EditText editText2 = (EditText) findViewById(R.id.editText2);
-                String sPoint=editText.getText().toString();
-                String tPoint=editText2.getText().toString();
+                startPoint.setError(null);
+                terminalPoint.setError(null);
+                dateText.setError(null);
+                String sPoint=startPoint.getText().toString();
+                String tPoint=terminalPoint.getText().toString();
+                String depart_time = dateText.getText().toString();
                 sharedPref = context.getSharedPreferences("address", MODE_WORLD_READABLE);
                 editor = sharedPref.edit();
                 editor.putString("SP", sPoint);
                 editor.putString("TP", tPoint);
+                editor.putString("time", depart_time);
+                System.out.println("time: "+depart_time);
                 editor.commit();
 
                 boolean cancel = false;
                 View focusView = null;
+                //Check whether the addresses are valid
                 if (!TextUtils.isEmpty(sPoint)&&!TextUtils.isEmpty(tPoint)){
-                    System.out.println("both not empty");
-                    if (!sPoint.equals(tPoint)){
-                        //System.out.println("not equal");
-                        //Intent intent = new Intent(Search.this, SearchResult.class);
-                        //System.out.println("SearchResult page is going to be launched");
-                        //intent.putExtra("startPoint or terminal", start);
-                        //intent.putExtra("searchPage or addPage", searchPage);
-                        //startActivity(intent);
-                    } else {
+                    if (sPoint.equals(tPoint)){
                         terminalPoint.setError("Start point and terminal point are the same place");
                         focusView = terminalPoint;
                         cancel = true;
@@ -248,6 +255,13 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
                     terminalPoint.setError("Terminal point needs to be set");
                     focusView = terminalPoint;
                     cancel = true;}
+
+                //Check whether the depart time is valid
+                if (!isValidDate(depart_time)){
+                    dateText.setError("Please enter a valid date");
+                    focusView = dateText;
+                    cancel = true;
+                }
 
                 if (cancel) {
                     // There was an error; don't attempt login and focus the first
@@ -269,10 +283,8 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
 
 
     private void updateLabel() {
-
-        String myFormat = "dd/MM/yy"; //In which you need put here
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-
+        String myFormat = "dd/MM/yyyy"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.ENGLISH);
         dateText.setText(sdf.format(myCalendar.getTime()));
 
     }
@@ -326,4 +338,43 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    private boolean isValidDate(String date) {
+
+        if (dateIsValid(date)) {
+
+            // from.setText(clone1);
+
+            String[] parts = date.split("/");
+            String part1 = parts[0];
+            String part2 = parts[1];
+            String part3 = parts[2];
+            boolean valid=true;
+            for(char c: part3.toCharArray()) {
+                if(!Character.isDigit(c))
+                {
+                    valid = false;
+                    break;
+                }
+            }
+            if (valid && Integer.parseInt(part1) >= 1 && Integer.parseInt(part1) <= 31 &&
+                    Integer.parseInt(part2) >= 1 && Integer.parseInt(part2) <= 12 &&
+                    Integer.parseInt(part3) >= 2016 && Integer.parseInt(part3) <= 2099)
+                return true;
+        }
+        return false;
+    }
+
+    private boolean dateIsValid(String date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        dateFormat.setLenient(false);
+        try {
+            dateFormat.parse(date.trim());
+        } catch (ParseException pe) {
+            return false;
+        }
+        return true;
+    }
+
+
 }

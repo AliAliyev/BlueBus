@@ -16,5 +16,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text=""
         android:id="@+id/details"
-        android:textColor="#6E6E6E"/>
+        android:textColor="#045FB4"
+        android:textSize="@dimen/activity_vertical_margin"
+        android:layout_gravity="center" />
 </LinearLayout>
