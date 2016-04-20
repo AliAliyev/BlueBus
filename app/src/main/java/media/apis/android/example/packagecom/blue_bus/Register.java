@@ -3,14 +3,25 @@ package media.apis.android.example.packagecom.blue_bus;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
@@ -31,7 +42,7 @@ import java.util.HashMap;
 /**
  * A login screen that offers login via email/password.
  */
-public class Register extends AppCompatActivity  {
+public class Register extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener  {
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -68,6 +79,34 @@ public class Register extends AppCompatActivity  {
         setContentView(R.layout.activity_register);
 
         session = new UserSessionManager(getApplicationContext());
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        View header = navigationView.getHeaderView(0);
+        TextView text = (TextView) header.findViewById(R.id.user);
+
+        if(session.isUserLoggedIn())
+            text.setText(session.getUserDetails().get(UserSessionManager.KEY_EMAIL));
+
+        if(session.isUserLoggedIn())
+        {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.activity_main_drawer);
+        } else
+        {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.activity_log_drawer);
+        }
 
         // Set up the register form.
         spinner = (Spinner) findViewById(R.id.spinner);
@@ -235,11 +274,41 @@ public class Register extends AppCompatActivity  {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            register(firstName, familyName, age, email, password);
-            userLogin(email, password);
+            if(haveNetworkConnection()) {
+                register(firstName, familyName, age, email, password);
+                userLogin(email, password);
+            }
+            else Toast.makeText(Register.this, "no internet connection", Toast.LENGTH_LONG).show();
             // mAuthTask = new UserLoginTask(email, password);
             // mAuthTask.execute((Void) null);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    private boolean haveNetworkConnection() {
+        boolean haveConnectedWifi = false;
+        boolean haveConnectedMobile = false;
+
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+        for (NetworkInfo ni : netInfo) {
+            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
+                if (ni.isConnected())
+                    haveConnectedWifi = true;
+            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
+                if (ni.isConnected())
+                    haveConnectedMobile = true;
+        }
+        return haveConnectedWifi || haveConnectedMobile;
     }
 
     private boolean isEmailValid(String email) {
@@ -307,7 +376,6 @@ public class Register extends AppCompatActivity  {
     private void register(String firstName, String familyName, String age, String email, String password) {
         String urlSuffix = "?firstName="+firstName+"&familyName="+familyName+"&age="+age+"&email="+email+"&password="+password;
         class RegisterUser extends AsyncTask<String, Void, String>{
-
             ProgressDialog loading;
 
             @Override
@@ -378,6 +446,47 @@ public class Register extends AppCompatActivity  {
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+        if (id == R.id.nav_home) {
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        } else if (id == R.id.nav_inbox) {
+            startActivity(new Intent(getApplicationContext(), Inbox.class));
+        } else if (id == R.id.nav_rides) {
+            startActivity(new Intent(getApplicationContext(), Myrides.class));
+        } else if (id == R.id.nav_register) {
+            startActivity(new Intent(getApplicationContext(), Register.class));
+        } else if (id == R.id.nav_login) {
+            startActivity(new Intent(getApplicationContext(), Login.class));
+        } else if (id == R.id.nav_send) {
+            final AlertDialog.Builder alertDialog = new AlertDialog.Builder(Register.this);
+            alertDialog.setTitle("Log out");
+            alertDialog.setMessage("Are you sure to log out?");
+            alertDialog.setPositiveButton("Log out", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    session.logoutUser();
+                }
+            });
+            alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    alertDialog.create().dismiss();
+                }
+            });
+            alertDialog.show();
+        }else if (id == R.id.nav_search) {
+            startActivity(new Intent(getApplicationContext(), Search.class));
+        } else if (id == R.id.nav_offer) {
+            startActivity(new Intent(getApplicationContext(), Add.class));
+        }else if (id == R.id.nav_help) {
+            startActivity(new Intent(getApplicationContext(), Help.class));
+        }
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 
 /*

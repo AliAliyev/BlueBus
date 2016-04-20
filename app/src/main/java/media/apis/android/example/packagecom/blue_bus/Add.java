@@ -1,19 +1,27 @@
 package media.apis.android.example.packagecom.blue_bus;
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.ActionBarActivity;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -40,7 +48,7 @@ import static java.util.Calendar.getInstance;
 /**
  * Created by Ali on 05/12/2015.
  */
-public class Add extends ActionBarActivity {
+public class Add extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private Calendar myCalendar;
     private EditText returnT, depart, departTime, returnTime;
@@ -56,11 +64,39 @@ public class Add extends ActionBarActivity {
     private SharedPreferences.Editor editor;
     private SharedPreferences sharedPref2;
     private SharedPreferences.Editor editor2;
-
+    UserSessionManager session;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add);
+        session = new UserSessionManager(getApplicationContext());
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        View header = navigationView.getHeaderView(0);
+        TextView text = (TextView) header.findViewById(R.id.user);
+
+        if(session.isUserLoggedIn())
+            text.setText(session.getUserDetails().get(UserSessionManager.KEY_EMAIL));
+
+        if(session.isUserLoggedIn())
+        {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.activity_main_drawer);
+        } else
+        {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.activity_log_drawer);
+        }
 
         depart = (EditText) findViewById(R.id.editText4);
         returnT = (EditText) findViewById(R.id.editText5);
@@ -68,7 +104,6 @@ public class Add extends ActionBarActivity {
         departTime = (EditText) findViewById(R.id.editText6);
         returnTime = (EditText) findViewById(R.id.editText7);
         returnTime.setVisibility(View.GONE);
-
 
         final ImageButton returnCalendar = (ImageButton) findViewById(R.id.imageButton4);
         returnCalendar.setVisibility(View.GONE);
@@ -734,8 +769,12 @@ public class Add extends ActionBarActivity {
                 Intent intent = new Intent(getApplicationContext(), RideOfferDetails.class);
                 intent.putExtra(START, String.valueOf(from.getText()));
                 intent.putExtra(DESTINATION, String.valueOf(to.getText()));
-                intent.putExtra(DEPART_DATE, String.valueOf(departTime.getText()).concat(" ").concat(String.valueOf(depart.getText())));
-                intent.putExtra(RETURN_DATE, String.valueOf(returnTime.getText()).concat(" ").concat(String.valueOf(returnT.getText())));
+                intent.putExtra(DEPART_DATE, String.valueOf(departTime.getText()).concat(" ").
+                        concat(String.valueOf(depart.getText())));
+                if(returnTrip.isChecked())
+                intent.putExtra(RETURN_DATE, String.valueOf(returnTime.getText()).concat(" ").
+                        concat(String.valueOf(returnT.getText())));
+                else intent.putExtra(RETURN_DATE, " ");
                 // intent.putExtra(DEPART_TIME, String.valueOf(departTime.getText()));
                 // intent.putExtra(RETURN_TIME, String.valueOf(returnTime.getText()));
                 startActivity(intent);
@@ -749,8 +788,6 @@ public class Add extends ActionBarActivity {
     private boolean isValidDate(String date) {
 
         if (dateIsValid(date)) {
-
-            // from.setText(clone1);
 
             String[] parts = date.split("/");
             String part1 = parts[0];
@@ -812,6 +849,46 @@ private boolean dateIsValid(String date) {
             "Runcorn - Daresbury Court", "Westbury - Heywood House", "Winnersh – 1020 Eskdale Road",
             "Wolverhampton - Trinity Court"
     };
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.nav_home) {
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        } else if (id == R.id.nav_inbox) {
+            startActivity(new Intent(getApplicationContext(), Inbox.class));
+        } else if (id == R.id.nav_rides) {
+            startActivity(new Intent(getApplicationContext(), Myrides.class));
+        } else if (id == R.id.nav_register) {
+            startActivity(new Intent(getApplicationContext(), Register.class));
+        } else if (id == R.id.nav_login) {
+            startActivity(new Intent(getApplicationContext(), Login.class));
+        } else if (id == R.id.nav_send) {
+            final AlertDialog.Builder alertDialog = new AlertDialog.Builder(Add.this);
+            alertDialog.setTitle("Log out");
+            alertDialog.setMessage("Are you sure to log out?");
+            alertDialog.setPositiveButton("Log out", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    session.logoutUser();
+                }
+            });
+            alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    alertDialog.create().dismiss();
+                }
+            });
+            alertDialog.show();
+        } else if (id == R.id.nav_search) {
+            startActivity(new Intent(getApplicationContext(), Search.class));
+        } else if (id == R.id.nav_offer) {
+            startActivity(new Intent(getApplicationContext(), Add.class));
+        }else if (id == R.id.nav_help) {
+            startActivity(new Intent(getApplicationContext(), Help.class));
+        }
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
 }
 
 /*

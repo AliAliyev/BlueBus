@@ -1,9 +1,10 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-    <item name="ic_menu_home" type="drawable">@android:drawable/ic_menu_view</item>
+    <item name="ic_menu_home" type="drawable">@drawable/ic_home</item>
     <item name="ic_menu_help" type="drawable">@android:drawable/ic_menu_help</item>
-    <item name="ic_menu_login" type="drawable">@android:drawable/ic_menu_directions</item>
-    <item name="ic_menu_inbox" type="drawable">@android:drawable/ic_menu_edit</item>
-    <item name="ic_menu_register" type="drawable">@android:drawable/ic_menu_add</item>
+    <item name="ic_menu_login" type="drawable">@drawable/ic_login</item>
+    <item name="ic_menu_inbox" type="drawable">@drawable/messages</item>
+    <item name="ic_menu_register" type="drawable">@drawable/ic_invite</item>
     <item name="ic_menu_rides" type="drawable">@android:drawable/ic_menu_sort_by_size</item>
-
+    <item name="ic_menu_search" type="drawable">@android:drawable/ic_menu_search</item>
+    <item name="ic_menu_offer" type="drawable">@android:drawable/ic_menu_add</item>
 </resources>

@@ -1,9 +1,14 @@
 package media.apis.android.example.packagecom.blue_bus;
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,8 +31,8 @@ import java.net.URL;
 public class RideOfferDetails extends AppCompatActivity implements NumberPicker.OnValueChangeListener {
 
     private static final String RIDES_URL = "http://halfbloodprince.16mb.com/rides.php";
-    NumberPicker np;
     private EditText seats;
+    UserSessionManager session;
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
@@ -36,19 +41,7 @@ public class RideOfferDetails extends AppCompatActivity implements NumberPicker.
         setContentView(R.layout.activity_ride_offer_details);
         // Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         // setSupportActionBar(toolbar);
-        //np = (NumberPicker) findViewById(R.id.numberPicker);
-
-/*
-       FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-*/
-
+        session = new UserSessionManager(getApplicationContext());
         final TextView start = (TextView) findViewById(R.id.textView5);
         final TextView dest = (TextView) findViewById(R.id.textView7);
         final TextView returnStart = (TextView) findViewById(R.id.textView12);
@@ -105,13 +98,60 @@ public class RideOfferDetails extends AppCompatActivity implements NumberPicker.
                 if (cancel) {
                     focusView.requestFocus();
                 } else {
-                    publishRide(start.getText().toString().replace(" ", "_"), dest.getText().toString().replace(" ", "_"),
-                            date.getText().toString().replace(" ", "_"), Integer.parseInt(seats.getText().toString()),
-                            comment.getText().toString().replace(" ", "_"));
-                    if (arrow.getVisibility() == View.VISIBLE)
-                        publishRide(dest.getText().toString().replace(" ", "_"), start.getText().toString().replace(" ", "_"),
-                                returnDate.getText().toString().replace(" ", "_"), Integer.parseInt(seats.getText().
-                                        toString()), comment.getText().toString().replace(" ", "_"));
+                    if(!session.isUserLoggedIn()) {
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(RideOfferDetails.this);
+
+                        // Setting Dialog Title
+                        alertDialog.setTitle("Almost there");
+
+                        // Setting Dialog Message
+                        alertDialog.setMessage("You need to log in to publish a ride");
+
+                        alertDialog.setPositiveButton("Log in", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int which) {
+                                startActivity(new Intent(getApplicationContext(), Login.class));
+                            }
+                        });
+
+                        alertDialog.setNegativeButton("Register", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                startActivity(new Intent(getApplicationContext(), Register.class));
+                            }
+                        });
+                        alertDialog.show();
+                    }
+                    else {
+                        if(haveNetworkConnection()) {
+
+                            final AlertDialog.Builder alertDialog = new AlertDialog.Builder(RideOfferDetails.this);
+
+                            // Setting Dialog Title
+                          //  alertDialog.setTitle("Almost there");
+
+                            // Setting Dialog Message
+                            alertDialog.setMessage("You are about to publish this ride offer. Are you sure?");
+
+                            alertDialog.setPositiveButton("Publish", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    publishRide(start.getText().toString().replace(" ", "_"), dest.getText().toString().replace(" ", "_"),
+                                            date.getText().toString().replace(" ", "_"), Integer.parseInt(seats.getText().toString()),
+                                            comment.getText().toString().replace(" ", "_"));
+                                    if (arrow.getVisibility() == View.VISIBLE)
+                                        publishRide(dest.getText().toString().replace(" ", "_"), start.getText().toString().replace(" ", "_"),
+                                                returnDate.getText().toString().replace(" ", "_"), Integer.parseInt(seats.getText().
+                                                        toString()), comment.getText().toString().replace(" ", "_"));
+                                }
+                            });
+
+                            alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    alertDialog.create().dismiss();
+                                }
+                            });
+                            alertDialog.show();
+                        }
+                        else Toast.makeText(getApplicationContext(), "no internet connection", Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         });
@@ -132,6 +172,23 @@ public class RideOfferDetails extends AppCompatActivity implements NumberPicker.
               if(seats.hasFocus())  show();
             }
         });
+    }
+
+    private boolean haveNetworkConnection() {
+        boolean haveConnectedWifi = false;
+        boolean haveConnectedMobile = false;
+
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
+        for (NetworkInfo ni : netInfo) {
+            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
+                if (ni.isConnected())
+                    haveConnectedWifi = true;
+            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
+                if (ni.isConnected())
+                    haveConnectedMobile = true;
+        }
+        return haveConnectedWifi || haveConnectedMobile;
     }
 
     @Override

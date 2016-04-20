@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/login_form"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <AutoCompleteTextView
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/editText"
+                android:inputType="text"
+                android:hint="from..."
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="143dp" />
+
+            <AutoCompleteTextView
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/editText2"
+                android:inputType="text"
+                android:hint="to..."
+                android:layout_above="@+id/imageButton"
+                android:layout_toRightOf="@+id/imageView2"
+                android:layout_toEndOf="@+id/imageView2" />
+
+            <ImageButton
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:id="@+id/imageButton"
+                android:background="@drawable/calendar"
+                android:contentDescription=""
+                android:layout_marginTop="59dp"
+                android:layout_below="@+id/imageView2"
+                android:layout_alignLeft="@+id/imageView2"
+                android:layout_alignStart="@+id/imageView2" />
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="120dp"
+                android:id="@+id/imageView2"
+                android:background="@drawable/omp"
+                android:layout_alignTop="@+id/imageButton6"
+                android:layout_toLeftOf="@+id/editText"
+                android:layout_toStartOf="@+id/editText"
+                android:layout_marginRight="31dp"
+                android:layout_marginEnd="31dp" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:ems="10"
+                android:id="@+id/editText3"
+                android:layout_alignBottom="@+id/imageButton"
+                android:layout_alignLeft="@+id/editText2"
+                android:layout_alignStart="@+id/editText2"
+                android:hint="date..."/>
+
+            <ImageButton
+                android:layout_width="115dp"
+                android:layout_height="75dp"
+                android:id="@+id/imageButton2"
+                android:background="@drawable/go"
+                android:layout_below="@+id/editText3"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="35dp" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageButton6"
+                android:src="@drawable/plus"
+                android:layout_alignBottom="@+id/editText"
+                android:layout_toRightOf="@+id/editText"
+                android:layout_toEndOf="@+id/editText" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageButton7"
+                android:src="@drawable/plus"
+                android:layout_alignTop="@+id/editText2"
+                android:layout_alignLeft="@+id/imageButton6"
+                android:layout_alignStart="@+id/imageButton6" />
+
+        </RelativeLayout>
+    </LinearLayout>
+
+</ScrollView>

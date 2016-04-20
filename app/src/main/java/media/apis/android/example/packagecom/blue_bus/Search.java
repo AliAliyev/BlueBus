@@ -1,12 +1,20 @@
 package media.apis.android.example.packagecom.blue_bus;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -24,7 +32,7 @@ import java.util.Locale;
  */
 
 
-public class Search extends ActionBarActivity {
+public class Search extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private EditText dateText;
     private Calendar myCalendar;
@@ -36,13 +44,41 @@ public class Search extends ActionBarActivity {
     private SharedPreferences.Editor editor;
     private SharedPreferences sharedPref2;
     private SharedPreferences.Editor editor2;
-
-
-
+    UserSessionManager session;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search);
+
+        session = new UserSessionManager(getApplicationContext());
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        View header = navigationView.getHeaderView(0);
+        TextView text = (TextView) header.findViewById(R.id.user);
+
+        if(session.isUserLoggedIn())
+            text.setText(session.getUserDetails().get(UserSessionManager.KEY_EMAIL));
+
+        if(session.isUserLoggedIn())
+        {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.activity_main_drawer);
+        } else
+        {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.activity_log_drawer);
+        }
+
         sharedPref = context.getSharedPreferences("address", MODE_WORLD_READABLE);
         EditText editText = (EditText) findViewById(R.id.editText);
         EditText editText2 = (EditText) findViewById(R.id.editText2);
@@ -251,5 +287,43 @@ public class Search extends ActionBarActivity {
             "Wolverhampton - Trinity Court"
     };
 
-
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.nav_home) {
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        } else if (id == R.id.nav_inbox) {
+            startActivity(new Intent(getApplicationContext(), Inbox.class));
+        } else if (id == R.id.nav_rides) {
+            startActivity(new Intent(getApplicationContext(), Myrides.class));
+        } else if (id == R.id.nav_register) {
+            startActivity(new Intent(getApplicationContext(), Register.class));
+        } else if (id == R.id.nav_login) {
+            startActivity(new Intent(getApplicationContext(), Login.class));
+        } else if (id == R.id.nav_send) {
+            final AlertDialog.Builder alertDialog = new AlertDialog.Builder(Search.this);
+            alertDialog.setTitle("Log out");
+            alertDialog.setMessage("Are you sure to log out?");
+            alertDialog.setPositiveButton("Log out", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    session.logoutUser();
+                }
+            });
+            alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    alertDialog.create().dismiss();
+                }
+            });
+            alertDialog.show();
+        } else if (id == R.id.nav_search) {
+            startActivity(new Intent(getApplicationContext(), Search.class));
+        } else if (id == R.id.nav_offer) {
+            startActivity(new Intent(getApplicationContext(), Add.class));
+        }else if (id == R.id.nav_help) {
+            startActivity(new Intent(getApplicationContext(), Help.class));
+        }
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
 }

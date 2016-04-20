@@ -29,23 +29,38 @@
         <activity
             android:name=".Search"
             android:label="Search"
-            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait" />
         <activity
             android:name=".Add"
             android:label="Add"
-            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait" />
         <activity
             android:name=".Login"
             android:label="@string/title_activity_login"
-            android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".Register"
             android:label="@string/title_activity_register"
-            android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Inbox"
+            android:label="@string/title_activity_inbox"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Help"
+            android:label="@string/title_activity_help"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Myrides"
+            android:label="@string/title_activity_myrides"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".RideOfferDetails"
             android:label="@string/title_activity_ride_offer_details"
@@ -54,7 +69,6 @@
         <activity
             android:name=".SearchResult"
             android:label="Search Result"
-            android:parentActivityName=".Search"
             android:screenOrientation="portrait" />
         <activity
             android:name=".Map"

@@ -1,5 +1,7 @@
 package media.apis.android.example.packagecom.blue_bus;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -79,25 +81,25 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-       // if(session.checkLogin())
-         //   finish();
+        // if(session.checkLogin())
+        //   finish();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         //In onresume fetching value from sharedpreference
-     //   SharedPreferences sharedPreferences = getSharedPreferences(Config.SHARED_PREF_NAME,Context.MODE_PRIVATE);
+        //   SharedPreferences sharedPreferences = getSharedPreferences(Config.SHARED_PREF_NAME,Context.MODE_PRIVATE);
         session = new UserSessionManager(getApplicationContext());
 
         //Fetching the boolean value form sharedpreferences
-       // loggedIn = sharedPreferences.getBoolean(Config.LOGGEDIN_SHARED_PREF, false);
+        // loggedIn = sharedPreferences.getBoolean(Config.LOGGEDIN_SHARED_PREF, false);
 
         //If we will get true
-     //   if(session.isUserLoggedIn()){
+        //   if(session.isUserLoggedIn()){
             //We will start the Profile Activity
-         //   Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
-       //     startActivity(intent);
+        //   Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+        //     startActivity(intent);
         //}
     }
 
@@ -136,24 +138,38 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
-
         if (id == R.id.nav_home) {
-        } //else if (id == R.id.nav_camera) { }
-
-        else if (id == R.id.nav_inbox) {
-
+        } else if (id == R.id.nav_inbox) {
+            startActivity(new Intent(getApplicationContext(), Inbox.class));
         } else if (id == R.id.nav_rides) {
-
+            startActivity(new Intent(getApplicationContext(), Myrides.class));
         } else if (id == R.id.nav_register) {
             startActivity(new Intent(getApplicationContext(), Register.class));
         } else if (id == R.id.nav_login) {
             startActivity(new Intent(getApplicationContext(), Login.class));
         } else if (id == R.id.nav_send) {
-            session.logoutUser();
+            final AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+            alertDialog.setTitle("Log out");
+            alertDialog.setMessage("Are you sure to log out?");
+            alertDialog.setPositiveButton("Log out", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    session.logoutUser();
+                }
+            });
+            alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    alertDialog.create().dismiss();
+                }
+            });
+            alertDialog.show();
+        }else if (id == R.id.nav_search) {
+            startActivity(new Intent(getApplicationContext(), Search.class));
+        } else if (id == R.id.nav_offer) {
+            startActivity(new Intent(getApplicationContext(), Add.class));
+        }else if (id == R.id.nav_help) {
+            startActivity(new Intent(getApplicationContext(), Help.class));
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
