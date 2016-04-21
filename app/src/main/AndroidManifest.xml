@@ -71,6 +71,11 @@
             android:label="Search Result"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".RidePublished"
+            android:label="Ride Published"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".Map"
             android:label="@string/title_activity_map" />
 

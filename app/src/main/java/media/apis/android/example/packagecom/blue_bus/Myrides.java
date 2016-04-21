@@ -12,7 +12,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 /**
  * Created by Ali on 20/04/2016.
@@ -21,10 +24,17 @@ public class Myrides extends AppCompatActivity implements NavigationView.OnNavig
 
     UserSessionManager session;
 
+    RideAdapter rideAdapter;
+    ArrayList<RideItem> myListItems;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_myrides);
+
+        myListItems  = new ArrayList<RideItem>();
+
+        populateListView();
 
         session = new UserSessionManager(getApplicationContext());
 
@@ -53,6 +63,12 @@ public class Myrides extends AppCompatActivity implements NavigationView.OnNavig
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.activity_log_drawer);
         }
+    }
+
+    private void populateListView() {
+        rideAdapter = new RideAdapter (Myrides.this, 0, myListItems);
+        ListView listview = (ListView) findViewById(R.id.listView);
+        listview.setAdapter(rideAdapter);
     }
 
     @Override

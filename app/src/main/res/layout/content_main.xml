@@ -4,29 +4,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:paddingTop="90dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="media.apis.android.example.packagecom.blue_bus.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
-    <ImageButton
-        android:layout_width="130dp"
-        android:layout_height="130dp"
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:id="@+id/search"
         android:layout_gravity="bottom|end"
-        android:background="@drawable/search"
-        android:layout_marginTop="58dp"
-        android:layout_alignRight="@+id/add"
-        android:layout_alignEnd="@+id/add" />
+        android:src="@android:drawable/ic_menu_search"
+        android:layout_alignRight="@+id/textView"
+        android:layout_alignEnd="@+id/textView"
+        android:layout_alignLeft="@+id/textView"
+        android:layout_alignStart="@+id/textView"
+        app:backgroundTint="#849cbe" />
 
-    <ImageButton
-        android:layout_width="130dp"
-        android:layout_height="130dp"
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:id="@+id/add"
-        android:background="@drawable/addn"
-        android:layout_marginTop="73dp"
-        android:layout_below="@+id/textView"
-        android:layout_centerHorizontal="true" />
+        android:src="@android:drawable/ic_menu_add"
+        android:layout_marginTop="88dp"
+        android:layout_below="@+id/search"
+        android:layout_alignStart="@+id/textView2"
+        android:layout_alignRight="@+id/search"
+        android:layout_alignEnd="@+id/search"
+        app:backgroundTint="#334377" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -35,13 +40,14 @@
         android:text="Search ride"
         android:id="@+id/textView"
         android:layout_below="@+id/search"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignLeft="@+id/textView2"
+        android:layout_alignStart="@+id/textView2" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Offer ride"
+        android:text="  Offer ride "
         android:id="@+id/textView2"
         android:layout_below="@+id/add"
         android:layout_centerHorizontal="true" />

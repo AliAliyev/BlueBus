@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/login_form"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -9,7 +10,8 @@
 
         <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:layout_height="fill_parent"
+            android:paddingBottom="25dp">
 
             <AutoCompleteTextView
                 android:layout_width="200dp"
@@ -64,14 +66,15 @@
                 android:layout_alignStart="@+id/editText2"
                 android:hint="date..."/>
 
-            <ImageButton
+            <android.support.design.widget.FloatingActionButton
                 android:layout_width="115dp"
-                android:layout_height="75dp"
+                android:layout_height="wrap_content"
                 android:id="@+id/imageButton2"
-                android:background="@drawable/go"
+                android:src="@drawable/ic_menu_forward"
                 android:layout_below="@+id/editText3"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="35dp" />
+                android:layout_marginTop="35dp"
+                app:backgroundTint="#849cbe" />
 
             <ImageButton
                 android:layout_width="wrap_content"

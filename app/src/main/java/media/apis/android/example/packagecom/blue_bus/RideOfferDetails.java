@@ -124,13 +124,7 @@ public class RideOfferDetails extends AppCompatActivity implements NumberPicker.
                         if(haveNetworkConnection()) {
 
                             final AlertDialog.Builder alertDialog = new AlertDialog.Builder(RideOfferDetails.this);
-
-                            // Setting Dialog Title
-                          //  alertDialog.setTitle("Almost there");
-
-                            // Setting Dialog Message
                             alertDialog.setMessage("You are about to publish this ride offer. Are you sure?");
-
                             alertDialog.setPositiveButton("Publish", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     publishRide(start.getText().toString().replace(" ", "_"), dest.getText().toString().replace(" ", "_"),
@@ -140,6 +134,7 @@ public class RideOfferDetails extends AppCompatActivity implements NumberPicker.
                                         publishRide(dest.getText().toString().replace(" ", "_"), start.getText().toString().replace(" ", "_"),
                                                 returnDate.getText().toString().replace(" ", "_"), Integer.parseInt(seats.getText().
                                                         toString()), comment.getText().toString().replace(" ", "_"));
+                                    startActivity(new Intent(getApplicationContext(), RidePublished.class));
                                 }
                             });
 
