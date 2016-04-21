@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
 
     <ImageView
         android:layout_width="64dp"
@@ -18,5 +19,6 @@
         android:id="@+id/details"
         android:textColor="#045FB4"
         android:textSize="@dimen/activity_vertical_margin"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:background="@drawable/my_selector" />
 </LinearLayout>

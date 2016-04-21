@@ -234,7 +234,7 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
                 editor = sharedPref.edit();
                 editor.putString("SP", sPoint);
                 editor.putString("TP", tPoint);
-                editor.putString("time", depart_time);
+                editor.putString("date", depart_time);
                 System.out.println("time: "+depart_time);
                 editor.commit();
 
