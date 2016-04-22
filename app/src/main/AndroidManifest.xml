@@ -71,6 +71,10 @@
             android:label="Search Result"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".JSONParser"
+            android:label="my rides"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".RidePublished"
             android:label="Ride Published"
             android:parentActivityName=".MainActivity"

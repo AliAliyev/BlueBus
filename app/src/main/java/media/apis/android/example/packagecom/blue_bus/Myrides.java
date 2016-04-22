@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -67,8 +66,8 @@ public class Myrides extends AppCompatActivity implements NavigationView.OnNavig
 
     private void populateListView() {
         rideAdapter = new RideAdapter (Myrides.this, 0, myListItems);
-        ListView listview = (ListView) findViewById(R.id.listView);
-        listview.setAdapter(rideAdapter);
+      //  ListView listview = (ListView) findViewById(R.id.list);
+      //  listview.setAdapter(rideAdapter);
     }
 
     @Override
