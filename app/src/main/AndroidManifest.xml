@@ -82,6 +82,9 @@
         <activity
             android:name=".Map"
             android:label="@string/title_activity_map" />
+        <activity
+            android:name=".Notification">
+        </activity>
 
 
         <meta-data

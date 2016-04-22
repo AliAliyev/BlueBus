@@ -16,7 +16,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -127,7 +129,7 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_dropdown_item_1line, COUNTRIES);
+                android.R.layout.simple_dropdown_item_1line, OFFICES);
         AutoCompleteTextView from = (AutoCompleteTextView)
                 findViewById(R.id.editText);
         from.setAdapter(adapter);
@@ -215,8 +217,65 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
             }
         });
 
-        //final String SP = startPoint.getText().toString();
-        //final String TP = terminalPoint.getText().toString();
+        startPoint.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // TODO Auto-generated method stub
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                startPoint.setError(null);
+                String departText = startPoint.getText().toString();
+                boolean cancel = false;
+                View focusView = null;
+                if (TextUtils.isEmpty(departText)) {
+                    startPoint.setError(getString(R.string.error_field_required));
+                    focusView = startPoint;
+                    cancel = true;
+                } else if(!isValidLocation(departText)) {
+                    startPoint.setError("Please choose one of the provided ATOS offices");
+                    focusView = startPoint;
+                    cancel = true;
+                }
+                if (cancel) {
+                    focusView.requestFocus();
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                // TODO Auto-generated method stub
+            }
+        });
+
+        terminalPoint.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // TODO Auto-generated method stub
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                terminalPoint.setError(null);
+                String termText = terminalPoint.getText().toString();
+                boolean cancel = false;
+                View focusView = null;
+                if (TextUtils.isEmpty(termText)) {
+                    terminalPoint.setError(getString(R.string.error_field_required));
+                    focusView = terminalPoint;
+                    cancel = true;
+                } else if(!isValidLocation(termText)) {
+                    terminalPoint.setError("Please choose one of the provided ATOS offices");
+                    focusView = terminalPoint;
+                    cancel = true;
+                }
+                if (cancel) {
+                    focusView.requestFocus();
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                // TODO Auto-generated method stub
+            }
+        });
 
         ImageButton search = (ImageButton) findViewById(R.id.imageButton2);
         search.setOnClickListener(new View.OnClickListener(){
@@ -280,7 +339,13 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
 
     }
 
-
+    private boolean isValidLocation(String location) {
+        for(String i: OFFICES) {
+            if (location.equalsIgnoreCase(i))
+                return true;
+        }
+        return false;
+    }
 
     private void updateLabel() {
         String myFormat = "dd/MM/yyyy"; //In which you need put here
@@ -289,7 +354,7 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
 
     }
 
-    private static final String[] COUNTRIES = new String[] {
+    private static final String[] OFFICES = new String[] {
             "Andover - Kingsgate House", "Birmingham - Business Park", "Bristol - Beta Building",
             "Cambridge - Discovery House", "Crewe - Rail House", "Darlington - Equinox House",
             "Dublin - Ireland","Dundee - Maryfield House", "Guildford - Deacon Field",
