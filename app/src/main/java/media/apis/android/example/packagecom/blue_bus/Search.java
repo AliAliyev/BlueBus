@@ -3,6 +3,7 @@ package media.apis.android.example.packagecom.blue_bus;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,11 +27,15 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+
+import static java.util.Calendar.HOUR_OF_DAY;
+import static java.util.Calendar.MINUTE;
 
 /**
  * Created by Ali on 03/12/2015.
@@ -125,31 +130,13 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_dropdown_item_1line, OFFICES);
-        final AutoCompleteTextView from = (AutoCompleteTextView)
+        AutoCompleteTextView from = (AutoCompleteTextView)
                 findViewById(R.id.editText);
         from.setAdapter(adapter);
 
-        final AutoCompleteTextView to = (AutoCompleteTextView)
+        AutoCompleteTextView to = (AutoCompleteTextView)
                 findViewById(R.id.editText2);
         to.setAdapter(adapter);
-
-        from.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                from.showDropDown();
-
-            }
-        });
-
-        to.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                to.showDropDown();
-
-            }
-        });
 
         dateText = (EditText) findViewById(R.id.editText3);
 
@@ -172,20 +159,12 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
 
         dateText.setOnClickListener(new View.OnClickListener() {
 
-            @TargetApi(Build.VERSION_CODES.HONEYCOMB)
             @Override
             public void onClick(View v) {
-                DatePickerDialog datePickerDialog = new DatePickerDialog(Search.this, new DatePickerDialog.OnDateSetListener(){
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        myCalendar.set(Calendar.YEAR, year);
-                        myCalendar.set(Calendar.MONTH, monthOfYear);
-                        myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                        updateLabel();
-                    }
-                }, myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH));
-                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
-                datePickerDialog.show();
+                // TODO Auto-generated method stub
+                new DatePickerDialog(Search.this, date, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
 
