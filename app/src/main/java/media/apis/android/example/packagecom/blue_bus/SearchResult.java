@@ -81,12 +81,14 @@ public class SearchResult extends ActionBarActivity{
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 view.setSelected(true);
                 selected = (String) (lv.getItemAtPosition(position));
-                String [] records = selected.split("\n");
-                depart_time = records[0].substring(14);
-                seats = records[1].substring(21);
-                comment = records[2].substring(15);
-                noOfSeats = Integer.parseInt(seats);
-                bookingDialog();
+                if (!selected.equals(" No trip is found")){
+                    String [] records = selected.split("\n");
+                    depart_time = records[0].substring(14);
+                    seats = records[1].substring(21);
+                    comment = records[2].substring(15);
+                    noOfSeats = Integer.parseInt(seats);
+                    bookingDialog();
+                }
             }
         });
     }
@@ -184,12 +186,13 @@ public class SearchResult extends ActionBarActivity{
 
     private String updateSeats (final String reducedNumber, final String depart_time, final String seats, final String comment){
         class UpdateSeatsClass extends AsyncTask<String,Void,String>{
-            boolean error = true;
+            boolean error;
             ProgressDialog loading;
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
                 loading = ProgressDialog.show(SearchResult.this, "Please Wait", null, true, true);
+                error = true;
             }
             @Override
             protected void onPostExecute(String s) {
@@ -285,8 +288,8 @@ public class SearchResult extends ActionBarActivity{
                                                     updateSeats(reducedSeats, depart_time.replace(" ", "_"), seats.replace(" ", "_"), comment.replace(" ", "_"));
                                                     if (!updateError) {
                                                         Toast.makeText(getApplicationContext(), "You have booked a ride!", Toast.LENGTH_LONG).show();
-                                                        //SearchResult.this.finish();
-                                                        //startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                                        SearchResult.this.finish();
+                                                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
                                                     } else {
                                                         Toast.makeText(getApplicationContext(), "Error from database! Please search again", Toast.LENGTH_LONG).show();
                                                     }
@@ -342,4 +345,3 @@ public class SearchResult extends ActionBarActivity{
 
 
 }
-
