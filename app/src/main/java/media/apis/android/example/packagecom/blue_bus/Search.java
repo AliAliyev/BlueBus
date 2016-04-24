@@ -349,7 +349,7 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
                     focusView.requestFocus();
                 } else {
                     System.out.println("Intent created");
-                    Intent intent = new Intent(Search.this, SearchResult.class);
+                    Intent intent = new Intent(Search.this, MainActivity.class);
                     System.out.println("SearchResult page is going to be launched");
                     startActivity(intent);
                 }

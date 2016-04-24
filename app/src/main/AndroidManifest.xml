@@ -68,10 +68,6 @@
             android:parentActivityName=".Add"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".SearchResult"
-            android:label="Search Result"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".ManageRideOffer"
             android:label="Manage ride offer"
             android:parentActivityName=".Myrides"
