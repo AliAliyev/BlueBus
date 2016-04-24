@@ -110,12 +110,14 @@ public class RideOfferDetails extends AppCompatActivity implements NumberPicker.
                         alertDialog.setPositiveButton("Log in", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,int which) {
                                 startActivity(new Intent(getApplicationContext(), Login.class));
+                                finish();
                             }
                         });
 
                         alertDialog.setNegativeButton("Register", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 startActivity(new Intent(getApplicationContext(), Register.class));
+                                finish();
                             }
                         });
                         alertDialog.show();
@@ -129,11 +131,11 @@ public class RideOfferDetails extends AppCompatActivity implements NumberPicker.
                                 public void onClick(DialogInterface dialog, int which) {
                                     publishRide(start.getText().toString().replace(" ", "_"), dest.getText().toString().replace(" ", "_"),
                                             date.getText().toString().replace(" ", "_"), Integer.parseInt(seats.getText().toString()),
-                                            comment.getText().toString().replace(" ", "_"));
+                                            comment.getText().toString().replace(" ", "_"),session.getUserDetails().get(UserSessionManager.KEY_EMAIL));
                                     if (arrow.getVisibility() == View.VISIBLE)
                                         publishRide(dest.getText().toString().replace(" ", "_"), start.getText().toString().replace(" ", "_"),
                                                 returnDate.getText().toString().replace(" ", "_"), Integer.parseInt(seats.getText().
-                                                        toString()), comment.getText().toString().replace(" ", "_"));
+                                                        toString()), comment.getText().toString().replace(" ", "_"),session.getUserDetails().get(UserSessionManager.KEY_EMAIL));
                                     startActivity(new Intent(getApplicationContext(), RidePublished.class));
                                 }
                             });
@@ -219,9 +221,9 @@ public class RideOfferDetails extends AppCompatActivity implements NumberPicker.
         d.show();
     }
 
-    private void publishRide(String start, String destination, String depart_time, int seats, String comment) {
+    private void publishRide(String start, String destination, String depart_time, int seats, String comment, String user) {
         String urlSuffix = "?start="+start+"&destination="+destination+"&depart_time="+depart_time+"&seats="
-                +seats+"&comment="+comment;
+                +seats+"&comment="+comment+"&user="+user;
         class RegisterUser extends AsyncTask<String, Void, String> {
 
             ProgressDialog loading;

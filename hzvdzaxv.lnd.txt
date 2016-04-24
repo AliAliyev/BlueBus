@@ -1,0 +1,24 @@
+﻿
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Your branch is up-to-date with 'origin/master'.
+#
+# Changes to be committed:
+#	modified:   ../../../../../../../AndroidManifest.xml
+#	modified:   Add.java
+#	deleted:    JSONParser.java
+#	modified:   MainActivity.java
+#	new file:   ManageRideOffer.java
+#	modified:   Myrides.java
+#	modified:   RideOfferDetails.java
+#	modified:   RidePublished.java
+#	modified:   Search.java
+#	deleted:    User.java
+#	deleted:    UserLocalStore.java
+#	deleted:    UserProile.java
+#	deleted:    ../../../../../../../res/layout/activity_user_profile.xml
+#	modified:   ../../../../../../../res/layout/content_myrides.xml
+#	new file:   ../../../../../../../res/layout/manage_ride_offer.xml
+#
+

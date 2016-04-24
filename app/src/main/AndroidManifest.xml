@@ -72,8 +72,9 @@
             android:parentActivityName=".Search"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".JSONParser"
+            android:name=".ManageRideOffer"
             android:label="my rides"
+            android:parentActivityName=".Myrides"
             android:screenOrientation="portrait" />
         <activity
             android:name=".RidePublished"

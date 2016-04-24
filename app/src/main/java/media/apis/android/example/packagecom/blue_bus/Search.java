@@ -125,13 +125,31 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_dropdown_item_1line, OFFICES);
-        AutoCompleteTextView from = (AutoCompleteTextView)
+        final AutoCompleteTextView from = (AutoCompleteTextView)
                 findViewById(R.id.editText);
         from.setAdapter(adapter);
 
-        AutoCompleteTextView to = (AutoCompleteTextView)
+        final AutoCompleteTextView to = (AutoCompleteTextView)
                 findViewById(R.id.editText2);
         to.setAdapter(adapter);
+
+        from.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                from.showDropDown();
+
+            }
+        });
+
+        to.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                to.showDropDown();
+
+            }
+        });
 
         dateText = (EditText) findViewById(R.id.editText3);
 
@@ -154,12 +172,21 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
 
         dateText.setOnClickListener(new View.OnClickListener() {
 
+            @TargetApi(Build.VERSION_CODES.HONEYCOMB)
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                new DatePickerDialog(Search.this, date, myCalendar
-                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                DatePickerDialog datePickerDialog = new DatePickerDialog(Search.this, new DatePickerDialog.OnDateSetListener(){
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        myCalendar.set(Calendar.YEAR, year);
+                        myCalendar.set(Calendar.MONTH, monthOfYear);
+                        myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                        updateLabel();
+                    }
+                }, myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+                datePickerDialog.show();
             }
         });
 
