@@ -107,13 +107,10 @@ public class SearchResult extends ActionBarActivity{
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
                 loading.dismiss();
-                if (s.equals(" No trip is found")){
-                    Toast.makeText(getApplicationContext(), "Oops! No trip is found around the date", Toast.LENGTH_LONG).show();
-                } else {
-                    //to inflate the listview
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(SearchResult.this, R.layout.single_row, R.id.details, listviewData);
-                    lv.setAdapter(adapter);
-                }
+                //to inflate the listview
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(SearchResult.this, R.layout.single_row, R.id.details, listviewData);
+                lv.setAdapter(adapter);
+
             }
 
             @Override
