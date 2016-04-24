@@ -67,18 +67,13 @@
             android:parentActivityName=".Add"
             android:screenOrientation="portrait" />
         <activity
-<<<<<<< HEAD
-            android:name=".ManageRideOffer"
-            android:label="Manage ride offer"
-            android:parentActivityName=".Myrides"
-=======
             android:name=".SearchResult"
             android:label="Search Result"
+            android:parentActivityName=".Search"
             android:screenOrientation="portrait" />
         <activity
             android:name=".JSONParser"
             android:label="my rides"
->>>>>>> origin/master
             android:screenOrientation="portrait" />
         <activity
             android:name=".RidePublished"

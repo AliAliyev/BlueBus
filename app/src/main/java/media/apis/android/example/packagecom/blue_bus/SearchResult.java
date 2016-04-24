@@ -18,9 +18,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-import com.google.android.gms.location.places.AutocompletePrediction;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
@@ -31,10 +28,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -107,13 +102,13 @@ public class SearchResult extends ActionBarActivity{
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
                 loading.dismiss();
-                if (s.equals(" No trip is found")){
-                    Toast.makeText(getApplicationContext(), "Oops! No trip is found around the date", Toast.LENGTH_LONG).show();
-                } else {
+                //if (s.equals(" No trip is found")){
+                 //   Toast.makeText(getApplicationContext(), "Oops! No trip is found around the date", Toast.LENGTH_LONG).show();
+                //} else {
                     //to inflate the listview
                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(SearchResult.this, R.layout.single_row, R.id.details, listviewData);
                     lv.setAdapter(adapter);
-                }
+                //}
             }
 
             @Override

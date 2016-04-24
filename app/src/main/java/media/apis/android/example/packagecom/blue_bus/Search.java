@@ -3,7 +3,6 @@ package media.apis.android.example.packagecom.blue_bus;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -27,15 +26,11 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
-
-import static java.util.Calendar.HOUR_OF_DAY;
-import static java.util.Calendar.MINUTE;
 
 /**
  * Created by Ali on 03/12/2015.
@@ -328,7 +323,7 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
                     focusView.requestFocus();
                 } else {
                     System.out.println("Intent created");
-                    Intent intent = new Intent(Search.this, MainActivity.class);
+                    Intent intent = new Intent(Search.this, SearchResult.class);
                     System.out.println("SearchResult page is going to be launched");
                     startActivity(intent);
                 }
