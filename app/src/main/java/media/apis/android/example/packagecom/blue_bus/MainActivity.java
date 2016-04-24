@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_inbox) {
             startActivity(new Intent(getApplicationContext(), Inbox.class));
         } else if (id == R.id.nav_rides) {
-            startActivity(new Intent(getApplicationContext(), JSONParser.class));
+            startActivity(new Intent(getApplicationContext(), Myrides.class));
         } else if (id == R.id.nav_register) {
             startActivity(new Intent(getApplicationContext(), Register.class));
         } else if (id == R.id.nav_login) {
