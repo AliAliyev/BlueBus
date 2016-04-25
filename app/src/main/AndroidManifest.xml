@@ -73,9 +73,14 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ManageRideOffer"
-            android:label="my rides"
+            android:label="Manage Ride Offer"
             android:parentActivityName=".Myrides"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".UserProfile"
+            android:label="Profile"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".RidePublished"
             android:label="Ride Published"

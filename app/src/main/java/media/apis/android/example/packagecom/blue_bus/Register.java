@@ -29,6 +29,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -83,7 +84,7 @@ public class Register extends AppCompatActivity implements NavigationView.OnNavi
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -160,6 +161,22 @@ public class Register extends AppCompatActivity implements NavigationView.OnNavi
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+        ImageView image = (ImageView) header.findViewById(R.id.imageView);
+        image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), UserProfile.class));
+                drawer.closeDrawer(GravityCompat.START);
+            }
+        });
+        TextView textUser = (TextView) header.findViewById(R.id.user);
+        textUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), UserProfile.class));
+                drawer.closeDrawer(GravityCompat.START);
+            }
+        });
     }
 
 
@@ -232,6 +249,9 @@ public class Register extends AppCompatActivity implements NavigationView.OnNavi
         String age = mAgeView.getText().toString();
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
+        String gender = "not provided";
+        if(spinner.getSelectedItem()!=null)
+        gender= spinner.getSelectedItem().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -256,6 +276,14 @@ public class Register extends AppCompatActivity implements NavigationView.OnNavi
             mAgeView.setError(getString(R.string.error_field_required));
             focusView = mAgeView;
             cancel = true;
+        }else {
+            for(char c: age.toCharArray()) {
+                if(!Character.isDigit(c)) {
+                    mAgeView.setError("Please enter a valid age");
+                    focusView = mAgeView;
+                    cancel = true;
+                }
+            }
         }
         if (TextUtils.isEmpty(familyName)) {
             mFamilyNameView.setError(getString(R.string.error_field_required));
@@ -267,6 +295,11 @@ public class Register extends AppCompatActivity implements NavigationView.OnNavi
             focusView = mFirstNameView;
             cancel = true;
         }
+        if (gender.equalsIgnoreCase("not provided")) {
+            Toast.makeText(Register.this, "please select gender", Toast.LENGTH_LONG).show();
+            focusView = spinner;
+            cancel=true;
+        }
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
@@ -275,7 +308,7 @@ public class Register extends AppCompatActivity implements NavigationView.OnNavi
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             if(haveNetworkConnection()) {
-                register(firstName, familyName, age, email, password);
+                register(firstName, familyName, age, email, password, gender);
                 userLogin(email, password);
             }
             else Toast.makeText(Register.this, "no internet connection", Toast.LENGTH_LONG).show();
@@ -327,13 +360,13 @@ public class Register extends AppCompatActivity implements NavigationView.OnNavi
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-               // loading = ProgressDialog.show(Login.this,"Please Wait",null,true,true);
+                loading = ProgressDialog.show(Register.this,"Please Wait",null,true,true);
             }
 
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-             //   loading.dismiss();
+                loading.dismiss();
                 s = s.trim();
                 if (s.equalsIgnoreCase("success")){
                     showProgress(true);
@@ -373,8 +406,9 @@ public class Register extends AppCompatActivity implements NavigationView.OnNavi
         ulc.execute(username,password);
     }
 
-    private void register(String firstName, String familyName, String age, String email, String password) {
-        String urlSuffix = "?firstName="+firstName+"&familyName="+familyName+"&age="+age+"&email="+email+"&password="+password;
+    private void register(String firstName, String familyName, String age, String email, String password,String gender) {
+        String urlSuffix = "?firstName="+firstName+"&familyName="+familyName+"&age="+age+"&email="+email+
+                "&password="+password+"&gender="+gender;
         class RegisterUser extends AsyncTask<String, Void, String>{
             ProgressDialog loading;
 

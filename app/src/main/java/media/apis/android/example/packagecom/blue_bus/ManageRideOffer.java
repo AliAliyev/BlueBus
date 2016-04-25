@@ -103,9 +103,9 @@ public class ManageRideOffer extends AppCompatActivity {
                 loading.dismiss();
                 s = s.trim();
                 if (s.equalsIgnoreCase("success")){
+                    Toast.makeText(getApplicationContext(), "ride deleted", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(getApplicationContext(), Myrides.class);
                     startActivity(intent);
-                    Toast.makeText(getApplicationContext(), "ride deleted", Toast.LENGTH_LONG);
                     finish();
                 }else{
                     Toast.makeText(ManageRideOffer.this, "something went wrong", Toast.LENGTH_LONG).show();

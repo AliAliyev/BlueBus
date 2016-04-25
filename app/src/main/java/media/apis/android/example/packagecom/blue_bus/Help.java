@@ -3,6 +3,7 @@ package media.apis.android.example.packagecom.blue_bus;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,7 +13,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 /**
  * Created by Ali on 20/04/2016.
@@ -20,18 +27,18 @@ import android.widget.TextView;
 public class Help extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     UserSessionManager session;
+    ArrayList list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help);
-
         session = new UserSessionManager(getApplicationContext());
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -53,6 +60,54 @@ public class Help extends AppCompatActivity implements NavigationView.OnNavigati
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.activity_log_drawer);
         }
+
+        ListView listView = (ListView) findViewById(R.id.listView);
+
+        list = new ArrayList();
+        list.add("User Manual");
+        list.add("System Manual");
+        list.add("Blue Bus on Github");
+        list.add("Blue Bus project");
+        list.add("Contact us");
+
+        listView.setAdapter(new ArrayAdapter(
+                Help.this, android.R.layout.simple_list_item_1,
+                list));
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Uri uri = null;
+                if (position == 0)
+                    uri = Uri.parse("http://students.cs.ucl.ac.uk/2015/group6/UserManual.pdf");
+                else if (position == 1)
+                    uri = Uri.parse("http://students.cs.ucl.ac.uk/2015/group6/SystemManual.pdf");
+                else if (position == 2)
+                    uri = Uri.parse("https://github.com/AliAliyev/BlueBus");
+                else if (position == 3)
+                    uri = Uri.parse("http://students.cs.ucl.ac.uk/2015/group6/");
+                else if (position == 4)
+                    uri = Uri.parse("http://students.cs.ucl.ac.uk/2015/group6/#contactus");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+            }
+        });
+        ImageView image = (ImageView) header.findViewById(R.id.imageView);
+        image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), UserProfile.class));
+                drawer.closeDrawer(GravityCompat.START);
+            }
+        });
+        TextView textUser = (TextView) header.findViewById(R.id.user);
+        textUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), UserProfile.class));
+                drawer.closeDrawer(GravityCompat.START);
+            }
+        });
     }
 
     @Override

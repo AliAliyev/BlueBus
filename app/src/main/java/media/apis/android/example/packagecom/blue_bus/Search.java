@@ -25,6 +25,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.ParseException;
@@ -59,7 +60,7 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -244,6 +245,7 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 // TODO Auto-generated method stub
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 startPoint.setError(null);
@@ -254,7 +256,7 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
                     startPoint.setError(getString(R.string.error_field_required));
                     focusView = startPoint;
                     cancel = true;
-                } else if(!isValidLocation(departText)) {
+                } else if (!isValidLocation(departText)) {
                     startPoint.setError("Please choose one of the provided ATOS offices");
                     focusView = startPoint;
                     cancel = true;
@@ -263,6 +265,7 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
                     focusView.requestFocus();
                 }
             }
+
             @Override
             public void afterTextChanged(Editable s) {
                 // TODO Auto-generated method stub
@@ -274,6 +277,7 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 // TODO Auto-generated method stub
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 terminalPoint.setError(null);
@@ -284,7 +288,7 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
                     terminalPoint.setError(getString(R.string.error_field_required));
                     focusView = terminalPoint;
                     cancel = true;
-                } else if(!isValidLocation(termText)) {
+                } else if (!isValidLocation(termText)) {
                     terminalPoint.setError("Please choose one of the provided ATOS offices");
                     focusView = terminalPoint;
                     cancel = true;
@@ -293,6 +297,7 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
                     focusView.requestFocus();
                 }
             }
+
             @Override
             public void afterTextChanged(Editable s) {
                 // TODO Auto-generated method stub
@@ -300,7 +305,7 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
         });
 
         ImageButton search = (ImageButton) findViewById(R.id.imageButton2);
-        search.setOnClickListener(new View.OnClickListener(){
+        search.setOnClickListener(new View.OnClickListener() {
             @Override
 
             public void onClick(View v) {
@@ -308,37 +313,38 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
                 startPoint.setError(null);
                 terminalPoint.setError(null);
                 dateText.setError(null);
-                String sPoint=startPoint.getText().toString();
-                String tPoint=terminalPoint.getText().toString();
+                String sPoint = startPoint.getText().toString();
+                String tPoint = terminalPoint.getText().toString();
                 String depart_time = dateText.getText().toString();
                 sharedPref = context.getSharedPreferences("address", MODE_WORLD_READABLE);
                 editor = sharedPref.edit();
                 editor.putString("SP", sPoint);
                 editor.putString("TP", tPoint);
                 editor.putString("date", depart_time);
-                System.out.println("time: "+depart_time);
+                System.out.println("time: " + depart_time);
                 editor.commit();
 
                 boolean cancel = false;
                 View focusView = null;
                 //Check whether the addresses are valid
-                if (!TextUtils.isEmpty(sPoint)&&!TextUtils.isEmpty(tPoint)){
-                    if (sPoint.equals(tPoint)){
+                if (!TextUtils.isEmpty(sPoint) && !TextUtils.isEmpty(tPoint)) {
+                    if (sPoint.equals(tPoint)) {
                         terminalPoint.setError("Start point and terminal point are the same place");
                         focusView = terminalPoint;
                         cancel = true;
                     }
-                } else if (TextUtils.isEmpty(sPoint)){
+                } else if (TextUtils.isEmpty(sPoint)) {
                     startPoint.setError("Start point needs to be set");
                     focusView = startPoint;
                     cancel = true;
                 } else {
                     terminalPoint.setError("Terminal point needs to be set");
                     focusView = terminalPoint;
-                    cancel = true;}
+                    cancel = true;
+                }
 
                 //Check whether the depart time is valid
-                if (!isValidDate(depart_time)){
+                if (!isValidDate(depart_time)) {
                     dateText.setError("Please enter a valid date");
                     focusView = dateText;
                     cancel = true;
@@ -357,7 +363,22 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
             }
         });
 
-
+        ImageView image = (ImageView) header.findViewById(R.id.imageView);
+        image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), UserProfile.class));
+                drawer.closeDrawer(GravityCompat.START);
+            }
+        });
+        TextView textUser = (TextView) header.findViewById(R.id.user);
+        textUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), UserProfile.class));
+                drawer.closeDrawer(GravityCompat.START);
+            }
+        });
 
     }
 

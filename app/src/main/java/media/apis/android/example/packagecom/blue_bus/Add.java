@@ -29,6 +29,7 @@ import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -71,7 +72,7 @@ public class Add extends AppCompatActivity implements NavigationView.OnNavigatio
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -419,10 +420,12 @@ public class Add extends AppCompatActivity implements NavigationView.OnNavigatio
                     focusView.requestFocus();
                 }
             }
+
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 // TODO Auto-generated method stub
             }
+
             @Override
             public void afterTextChanged(Editable s) {
                 // TODO Auto-generated method stub
@@ -573,7 +576,7 @@ public class Add extends AppCompatActivity implements NavigationView.OnNavigatio
                 boolean cancel = false;
                 View focusView = null;
 
-                if(returnTrip.isChecked()) {
+                if (returnTrip.isChecked()) {
                     if (TextUtils.isEmpty(returnTimeText)) {
                         returnTime.setError(getString(R.string.error_field_required));
                         focusView = returnTime;
@@ -583,7 +586,7 @@ public class Add extends AppCompatActivity implements NavigationView.OnNavigatio
                         returnT.setError(getString(R.string.error_field_required));
                         focusView = returnT;
                         cancel = true;
-                    }else if(!isValidDate(returnText)) {
+                    } else if (!isValidDate(returnText)) {
                         returnT.setError("please enter a valid date");
                         focusView = returnT;
                         cancel = true;
@@ -598,7 +601,7 @@ public class Add extends AppCompatActivity implements NavigationView.OnNavigatio
                     depart.setError(getString(R.string.error_field_required));
                     focusView = depart;
                     cancel = true;
-                } else if(!isValidDate(departText)) {
+                } else if (!isValidDate(departText)) {
                     depart.setError("please enter a valid date");
                     focusView = depart;
                     cancel = true;
@@ -607,12 +610,11 @@ public class Add extends AppCompatActivity implements NavigationView.OnNavigatio
                     to.setError(getString(R.string.error_field_required));
                     focusView = to;
                     cancel = true;
-                }else if(!isValidLocation(toText)) {
+                } else if (!isValidLocation(toText)) {
                     to.setError("Please choose one of the provided ATOS offices");
                     focusView = to;
                     cancel = true;
-                }
-                else if(fromText.equalsIgnoreCase(toText)){
+                } else if (fromText.equalsIgnoreCase(toText)) {
                     to.setError("Start and destination points must be different");
                     focusView = to;
                     cancel = true;
@@ -621,7 +623,7 @@ public class Add extends AppCompatActivity implements NavigationView.OnNavigatio
                     from.setError(getString(R.string.error_field_required));
                     focusView = from;
                     cancel = true;
-                } else if(!isValidLocation(fromText)) {
+                } else if (!isValidLocation(fromText)) {
                     from.setError("Please choose one of the provided ATOS offices");
                     focusView = from;
                     cancel = true;
@@ -645,13 +647,13 @@ public class Add extends AppCompatActivity implements NavigationView.OnNavigatio
                     int minute = c.get(Calendar.MINUTE);
 
                     if (returnTrip.isChecked()) {
-                        if(Integer.parseInt(departDatePart1)==day && Integer.parseInt(departDatePart2)==month+1 &&
-                                Integer.parseInt(departDatePart3)==year) {
-                            if(Integer.parseInt(departTimePart1)==hour && Integer.parseInt(departTimePart2) < minute)
+                        if (Integer.parseInt(departDatePart1) == day && Integer.parseInt(departDatePart2) == month + 1 &&
+                                Integer.parseInt(departDatePart3) == year) {
+                            if (Integer.parseInt(departTimePart1) == hour && Integer.parseInt(departTimePart2) < minute)
                                 departTime.setError("please select a future time");
-                            else if(Integer.parseInt(departTimePart1) < hour)
+                            else if (Integer.parseInt(departTimePart1) < hour)
                                 departTime.setError("please select a future time");
-                             else {
+                            else {
                                 if (departText.equalsIgnoreCase(returnText)) {
                                     String[] departParts = departTimeText.split(":");
                                     String departPart1 = departParts[0];
@@ -739,20 +741,35 @@ public class Add extends AppCompatActivity implements NavigationView.OnNavigatio
                                 }
                             }
                         }
-                    }
-                    else {
-                        if(Integer.parseInt(departDatePart1)==day && Integer.parseInt(departDatePart2)==month+1 &&
-                                Integer.parseInt(departDatePart3)==year) {
-                            if(Integer.parseInt(departTimePart1)==hour && Integer.parseInt(departTimePart2) < minute)
+                    } else {
+                        if (Integer.parseInt(departDatePart1) == day && Integer.parseInt(departDatePart2) == month + 1 &&
+                                Integer.parseInt(departDatePart3) == year) {
+                            if (Integer.parseInt(departTimePart1) == hour && Integer.parseInt(departTimePart2) < minute)
                                 departTime.setError("please select a future time");
-                            else if(Integer.parseInt(departTimePart1) < hour)
+                            else if (Integer.parseInt(departTimePart1) < hour)
                                 departTime.setError("please select a future time");
                             else //depart.setText(String.valueOf(minute));
                                 goToRideDetailsPage();
                         } else
-                             goToRideDetailsPage();
+                            goToRideDetailsPage();
                     }
                 }
+            }
+        });
+        ImageView image = (ImageView) header.findViewById(R.id.imageView);
+        image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), UserProfile.class));
+                drawer.closeDrawer(GravityCompat.START);
+            }
+        });
+        TextView textUser = (TextView) header.findViewById(R.id.user);
+        textUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), UserProfile.class));
+                drawer.closeDrawer(GravityCompat.START);
             }
         });
     }
