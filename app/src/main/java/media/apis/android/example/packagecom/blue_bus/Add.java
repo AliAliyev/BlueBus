@@ -86,11 +86,26 @@ public class Add extends AppCompatActivity implements NavigationView.OnNavigatio
 
         if(session.isUserLoggedIn())
             text.setText(session.getUserDetails().get(UserSessionManager.KEY_EMAIL));
-
+        ImageView image = (ImageView) header.findViewById(R.id.imageView);
+        TextView textUser = (TextView) header.findViewById(R.id.user);
         if(session.isUserLoggedIn())
         {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.activity_main_drawer);
+            image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(getApplicationContext(), UserProfile.class));
+                    drawer.closeDrawer(GravityCompat.START);
+                }
+            });
+            textUser.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(getApplicationContext(), UserProfile.class));
+                    drawer.closeDrawer(GravityCompat.START);
+                }
+            });
         } else
         {
             navigationView.getMenu().clear();
@@ -754,22 +769,6 @@ public class Add extends AppCompatActivity implements NavigationView.OnNavigatio
                             goToRideDetailsPage();
                     }
                 }
-            }
-        });
-        ImageView image = (ImageView) header.findViewById(R.id.imageView);
-        image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), UserProfile.class));
-                drawer.closeDrawer(GravityCompat.START);
-            }
-        });
-        TextView textUser = (TextView) header.findViewById(R.id.user);
-        textUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), UserProfile.class));
-                drawer.closeDrawer(GravityCompat.START);
             }
         });
     }

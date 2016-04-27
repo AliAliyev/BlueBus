@@ -74,11 +74,26 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
 
         if(session.isUserLoggedIn())
             text.setText(session.getUserDetails().get(UserSessionManager.KEY_EMAIL));
-
+        ImageView image = (ImageView) header.findViewById(R.id.imageView);
+        TextView textUser = (TextView) header.findViewById(R.id.user);
         if(session.isUserLoggedIn())
         {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.activity_main_drawer);
+            image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(getApplicationContext(), UserProfile.class));
+                    drawer.closeDrawer(GravityCompat.START);
+                }
+            });
+            textUser.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(getApplicationContext(), UserProfile.class));
+                    drawer.closeDrawer(GravityCompat.START);
+                }
+            });
         } else
         {
             navigationView.getMenu().clear();
@@ -195,7 +210,7 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
             @TargetApi(Build.VERSION_CODES.HONEYCOMB)
             @Override
             public void onClick(View v) {
-                DatePickerDialog datePickerDialog = new DatePickerDialog(Search.this, new DatePickerDialog.OnDateSetListener(){
+                DatePickerDialog datePickerDialog = new DatePickerDialog(Search.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                         myCalendar.set(Calendar.YEAR, year);
@@ -203,7 +218,7 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
                         myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                         updateLabel();
                     }
-                }, myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH));
+                }, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH));
                 datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
                 datePickerDialog.show();
             }
@@ -362,24 +377,6 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
                 }
             }
         });
-
-        ImageView image = (ImageView) header.findViewById(R.id.imageView);
-        image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), UserProfile.class));
-                drawer.closeDrawer(GravityCompat.START);
-            }
-        });
-        TextView textUser = (TextView) header.findViewById(R.id.user);
-        textUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), UserProfile.class));
-                drawer.closeDrawer(GravityCompat.START);
-            }
-        });
-
     }
 
     private boolean isValidLocation(String location) {

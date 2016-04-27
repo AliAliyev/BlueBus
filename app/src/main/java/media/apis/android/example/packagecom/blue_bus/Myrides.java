@@ -79,10 +79,26 @@ public class Myrides extends AppCompatActivity implements NavigationView.OnNavig
 
         if (session.isUserLoggedIn())
             text.setText(session.getUserDetails().get(UserSessionManager.KEY_EMAIL));
-
-        if (session.isUserLoggedIn()) {
+        ImageView image = (ImageView) header.findViewById(R.id.imageView);
+        TextView textUser = (TextView) header.findViewById(R.id.user);
+        if(session.isUserLoggedIn())
+        {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.activity_main_drawer);
+            image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(getApplicationContext(), UserProfile.class));
+                    drawer.closeDrawer(GravityCompat.START);
+                }
+            });
+            textUser.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(getApplicationContext(), UserProfile.class));
+                    drawer.closeDrawer(GravityCompat.START);
+                }
+            });
         } else {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.activity_log_drawer);
@@ -93,26 +109,10 @@ public class Myrides extends AppCompatActivity implements NavigationView.OnNavig
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getApplicationContext(), ManageRideOffer.class);
                 intent.putExtra(CONTENT, listView.getItemAtPosition(position).toString());
-                if(!listView.getItemAtPosition(position).toString().equalsIgnoreCase("No rides to show")) {
+                if (!listView.getItemAtPosition(position).toString().equalsIgnoreCase("No rides to show")) {
                     startActivity(intent);
                     finish();
                 }
-            }
-        });
-        ImageView image = (ImageView) header.findViewById(R.id.imageView);
-        image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), UserProfile.class));
-                drawer.closeDrawer(GravityCompat.START);
-            }
-        });
-        TextView textUser = (TextView) header.findViewById(R.id.user);
-        textUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), UserProfile.class));
-                drawer.closeDrawer(GravityCompat.START);
             }
         });
     }
@@ -129,7 +129,6 @@ public class Myrides extends AppCompatActivity implements NavigationView.OnNavig
             @Override
             protected String doInBackground(String... params) {
                 try {
-
                     //to fetch data from database
                     HashMap<String,String> strData = new HashMap<>();
                     strData.put("user", params[0]);
@@ -168,7 +167,6 @@ public class Myrides extends AppCompatActivity implements NavigationView.OnNavig
                 //   items = new ArrayList();
                 try {
                     JSONArray ja = new JSONArray(next);
-
                     for (int i = 0; i < ja.length(); i++) {
                         //  JSONObject jo = (JSONObject) ja.get(i);
                         // items.add(jo.getString("food_name"));

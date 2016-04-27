@@ -4,9 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -33,14 +31,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -56,11 +46,26 @@ public class MainActivity extends AppCompatActivity
 
         if(session.isUserLoggedIn())
         text.setText(session.getUserDetails().get(UserSessionManager.KEY_EMAIL));
-
+        ImageView image = (ImageView) header.findViewById(R.id.imageView);
+        TextView textUser = (TextView) header.findViewById(R.id.user);
         if(session.isUserLoggedIn())
         {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.activity_main_drawer);
+            image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(getApplicationContext(), UserProfile.class));
+                    drawer.closeDrawer(GravityCompat.START);
+                }
+            });
+            textUser.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(getApplicationContext(), UserProfile.class));
+                    drawer.closeDrawer(GravityCompat.START);
+                }
+            });
         } else
         {
             navigationView.getMenu().clear();
@@ -84,23 +89,6 @@ public class MainActivity extends AppCompatActivity
 
         // if(session.checkLogin())
         //   finish();
-
-        ImageView image = (ImageView) header.findViewById(R.id.imageView);
-        image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), UserProfile.class));
-                drawer.closeDrawer(GravityCompat.START);
-            }
-        });
-        TextView textUser = (TextView) header.findViewById(R.id.user);
-        textUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), UserProfile.class));
-                drawer.closeDrawer(GravityCompat.START);
-            }
-        });
 
     }
 
@@ -135,7 +123,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+      //  getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 

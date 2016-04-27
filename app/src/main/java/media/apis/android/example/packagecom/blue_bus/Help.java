@@ -52,10 +52,26 @@ public class Help extends AppCompatActivity implements NavigationView.OnNavigati
 
         if (session.isUserLoggedIn())
             text.setText(session.getUserDetails().get(UserSessionManager.KEY_EMAIL));
-
-        if (session.isUserLoggedIn()) {
+        ImageView image = (ImageView) header.findViewById(R.id.imageView);
+        TextView textUser = (TextView) header.findViewById(R.id.user);
+        if(session.isUserLoggedIn())
+        {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.activity_main_drawer);
+            image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(getApplicationContext(), UserProfile.class));
+                    drawer.closeDrawer(GravityCompat.START);
+                }
+            });
+            textUser.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(getApplicationContext(), UserProfile.class));
+                    drawer.closeDrawer(GravityCompat.START);
+                }
+            });
         } else {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.activity_log_drawer);
@@ -90,22 +106,6 @@ public class Help extends AppCompatActivity implements NavigationView.OnNavigati
                     uri = Uri.parse("http://students.cs.ucl.ac.uk/2015/group6/#contactus");
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(intent);
-            }
-        });
-        ImageView image = (ImageView) header.findViewById(R.id.imageView);
-        image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), UserProfile.class));
-                drawer.closeDrawer(GravityCompat.START);
-            }
-        });
-        TextView textUser = (TextView) header.findViewById(R.id.user);
-        textUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), UserProfile.class));
-                drawer.closeDrawer(GravityCompat.START);
             }
         });
     }
