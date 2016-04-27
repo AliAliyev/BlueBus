@@ -41,6 +41,7 @@ public class SearchResult extends ActionBarActivity{
 
     private static final String SEARCH_URL = "http://halfbloodprince.16mb.com/search.php";
     private static final String UPDATE_URL = "http://halfbloodprince.16mb.com/updateseats.php";
+    private static final String EMAIL_URL = "http://halfbloodprince.16mb.com/send_email.php";
 
 
     Context context = this;
@@ -50,7 +51,7 @@ public class SearchResult extends ActionBarActivity{
     private EditText editText;
     private ListView lv;
     private AlertDialog.Builder dialogBuilder, confirmDialog;
-    private String selected, depart_time, seats, comment;
+    private String selected, depart_time, seats, comment, userDetails, email, firstName, familyName;
     private int number, noOfSeats;
     private boolean updateError;
 
@@ -83,6 +84,9 @@ public class SearchResult extends ActionBarActivity{
                     comment = records[2].substring(15);
                     noOfSeats = Integer.parseInt(seats);
                     bookingDialog();
+                    sendEmail(email, firstName, familyName, Integer.toString(number));
+                    //SearchResult.this.finish();
+                    //startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 }
             }
         });
@@ -232,6 +236,14 @@ public class SearchResult extends ActionBarActivity{
                             strResult+=line;
                         }
                         error = false;
+                        userDetails = strResult;
+                        userDetails = userDetails.replace(" ", "");
+                        System.out.println("Email'" + userDetails + "'");
+                        String [] details = userDetails.split("&");
+                        email = details[0];
+                        firstName = details[1];
+                        familyName = details[2];
+                        System.out.println("email:" + email);
                         return strResult;
                     }
                     con.disconnect();
@@ -283,8 +295,6 @@ public class SearchResult extends ActionBarActivity{
                                                     updateSeats(reducedSeats, depart_time.replace(" ", "_"), seats.replace(" ", "_"), comment.replace(" ", "_"));
                                                     if (!updateError) {
                                                         Toast.makeText(getApplicationContext(), "You have booked a ride!", Toast.LENGTH_LONG).show();
-                                                        SearchResult.this.finish();
-                                                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
                                                     } else {
                                                         Toast.makeText(getApplicationContext(), "Error from database! Please search again", Toast.LENGTH_LONG).show();
                                                     }
@@ -320,6 +330,78 @@ public class SearchResult extends ActionBarActivity{
             }
         });  dialogBuilder.create().show();
     }
+
+    private String sendEmail(final String userEmail, final String firstName, final String familyName, final String number){
+        class SendEmailClass extends AsyncTask<String,Void, String>{
+
+
+            @Override
+            protected void onPreExecute(){
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+            }
+
+            @Override
+            protected String doInBackground(String... params){
+                try {
+                    //to fetch data from database
+                    HashMap<String,String> strData = new HashMap<>();
+                    strData.put("user", params[0]);
+                    strData.put("firstname", params[1]);
+                    strData.put("familyname", params[2]);
+                    strData.put("number", params[3]);
+                    URL url = new URL(EMAIL_URL);
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    con.setReadTimeout(15000);
+                    con.setConnectTimeout(15000);
+                    con.setRequestMethod("POST");
+                    con.setDoInput(true);
+                    con.setDoOutput(true);
+
+                    OutputStream os = con.getOutputStream();
+                    BufferedWriter writer = new BufferedWriter(
+                            new OutputStreamWriter(os, "UTF-8"));
+                    writer.write(getPostDataString(strData));
+                    writer.flush();
+                    writer.close();
+                    os.close();
+                    System.out.println("database connected");
+
+                    int responseCode=con.getResponseCode();
+                    System.out.println("reading message");
+                    if (responseCode == HttpsURLConnection.HTTP_OK) {
+                        String line;
+                        String strResult = "";
+                        BufferedReader br=new BufferedReader(new InputStreamReader(con.getInputStream()));
+                        while ((line=br.readLine()) != null) {
+                            strResult+=line;
+                        }
+                        System.out.println("sentResult:"+strResult);
+                        return strResult;
+                    }else {
+                        Toast.makeText(getApplicationContext(), "fail!", Toast.LENGTH_LONG).show();
+                    }
+                    con.disconnect();
+                    return null;
+                }catch (MalformedURLException e){
+                    e.printStackTrace();
+                    return null;
+                }catch (Exception e){
+                    e.printStackTrace();
+                    return null;
+                }
+
+            }
+        }
+        SendEmailClass sendEmailClass = new SendEmailClass();
+        sendEmailClass.execute(userEmail, number);
+        return null;
+    }
+
     private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
         StringBuilder result = new StringBuilder();
         boolean first = true;
